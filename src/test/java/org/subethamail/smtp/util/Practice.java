@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.wiser.Wiser;
@@ -16,46 +15,48 @@ import org.subethamail.wiser.Wiser;
  *
  * @author Jeff Schnitzer
  */
-public class Practice
-{
-	/** */
-	@SuppressWarnings("unused")
-	private final static Logger log = LoggerFactory.getLogger(Practice.class);
+public class Practice {
 
-	/** */
-	public static final int PORT = 2566;
+    /**
+     *
+     */
+    @SuppressWarnings("unused")
+    private final static Logger log = LoggerFactory.getLogger(Practice.class);
 
-	/** */
-	public static void main(String[] args) throws Exception
-	{
-		Wiser wiser = new Wiser();
-		wiser.setHostname("localhost");
-		wiser.setPort(PORT);
+    /**
+     *
+     */
+    public static final int PORT = 2566;
 
-		wiser.start();
+    /**
+     *
+     */
+    public static void main(String[] args) throws Exception {
+        Wiser wiser = new Wiser();
+        wiser.setHostname("localhost");
+        wiser.setPort(PORT);
 
-		String line;
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        wiser.start();
 
-		do
-		{
-			line = in.readLine();
-			line = line.trim();
+        String line;
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-			if ("dump".equals(line));
-				wiser.dumpMessages(System.out);
+        do {
+            line = in.readLine();
+            line = line.trim();
 
-			if (line.startsWith("dump "))
-			{
-				line = line.substring("dump ".length());
-				File f = new File(line);
-				OutputStream out = new FileOutputStream(f);
-				wiser.dumpMessages(new PrintStream(out));
-				out.close();
-			}
-		}
-		while (!"quit".equals(line));
+            if ("dump".equals(line));
+            wiser.dumpMessages(System.out);
 
-		wiser.stop();
-	}
+            if (line.startsWith("dump ")) {
+                line = line.substring("dump ".length());
+                File f = new File(line);
+                OutputStream out = new FileOutputStream(f);
+                wiser.dumpMessages(new PrintStream(out));
+                out.close();
+            }
+        } while (!"quit".equals(line));
+
+        wiser.stop();
+    }
 }

@@ -8,23 +8,27 @@ package org.subethamail.smtp.auth;
  *
  * @author Jeff Schnitzer
  */
-public class EasyAuthenticationHandlerFactory extends MultipleAuthenticationHandlerFactory
-{
-	/** Just hold on to this so that the caller can get it later, if necessary */
-	UsernamePasswordValidator validator;
+public class EasyAuthenticationHandlerFactory extends MultipleAuthenticationHandlerFactory {
 
-	/** */
-	public EasyAuthenticationHandlerFactory(UsernamePasswordValidator validator)
-	{
-		this.validator = validator;
+    /**
+     * Just hold on to this so that the caller can get it later, if necessary
+     */
+    UsernamePasswordValidator validator;
 
-		this.addFactory(new PlainAuthenticationHandlerFactory(this.validator));
-		this.addFactory(new LoginAuthenticationHandlerFactory(this.validator));
-	}
+    /**
+     *
+     */
+    public EasyAuthenticationHandlerFactory(UsernamePasswordValidator validator) {
+        this.validator = validator;
 
-	/** */
-	public UsernamePasswordValidator getValidator()
-	{
-		return this.validator;
-	}
+        this.addFactory(new PlainAuthenticationHandlerFactory(this.validator));
+        this.addFactory(new LoginAuthenticationHandlerFactory(this.validator));
+    }
+
+    /**
+     *
+     */
+    public UsernamePasswordValidator getValidator() {
+        return this.validator;
+    }
 }

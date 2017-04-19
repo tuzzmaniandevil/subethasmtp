@@ -10,350 +10,358 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.io.DotTerminatedOutputStream;
 import org.subethamail.smtp.io.ExtraDotOutputStream;
 
-
 /**
- * A very low level abstraction of the STMP stream which knows how to handle
- * the raw protocol for lines, whitespace, etc.
+ * A very low level abstraction of the STMP stream which knows how to handle the
+ * raw protocol for lines, whitespace, etc.
  *
  * @author Jeff Schnitzer
  */
-public class SMTPClient
-{
-	/** 5 minutes */
-	private static final int CONNECT_TIMEOUT = 300 * 1000;
+public class SMTPClient {
 
-	/** 10 minutes */
-	private static final int REPLY_TIMEOUT = 600 * 1000;
+    /**
+     * 5 minutes
+     */
+    private static final int CONNECT_TIMEOUT = 300 * 1000;
 
-	/** */
-	private static Logger log = LoggerFactory.getLogger(SMTPClient.class);
+    /**
+     * 10 minutes
+     */
+    private static final int REPLY_TIMEOUT = 600 * 1000;
 
-	/** the local socket address */
-	private SocketAddress bindpoint;
-	
-	/**
-	 * True if the client has been successfully connected to the server and not
-	 * it has not been closed yet.
-	 **/
-	private boolean connected;
+    /**
+     *
+     */
+    private static Logger log = LoggerFactory.getLogger(SMTPClient.class);
 
-	/** Just for display purposes */
-	String hostPort;
+    /**
+     * the local socket address
+     */
+    private SocketAddress bindpoint;
 
-	/** The raw socket */
-	Socket socket;
+    /**
+     * True if the client has been successfully connected to the server and not
+     * it has not been closed yet.
+     *
+     */
+    private boolean connected;
 
-	/** */
-	BufferedReader reader;
+    /**
+     * Just for display purposes
+     */
+    String hostPort;
 
-	/** Output streams used for data */
-	OutputStream rawOutput;
-	/**
-	 * A stream which wraps {@link #rawOutput} and is used to write out the DOT
-	 * CR LF terminating sequence in the DATA command, if necessary
-	 * complementing the message content with a closing CR LF.
-	 */
-	DotTerminatedOutputStream dotTerminatedOutput;
-	/**
-	 * This stream wraps {@link #dotTerminatedOutput} and it does the dot
-	 * stuffing for the SMTP DATA command.
-	 */
-	ExtraDotOutputStream dataOutput;
+    /**
+     * The raw socket
+     */
+    Socket socket;
 
-	/** Note we bypass this during DATA */
-	PrintWriter writer;
+    /**
+     *
+     */
+    BufferedReader reader;
 
-	/**
-	 * Result of an SMTP exchange.
-	 */
-	public static class Response
-	{
-		int code;
-		String message;
+    /**
+     * Output streams used for data
+     */
+    OutputStream rawOutput;
+    /**
+     * A stream which wraps {@link #rawOutput} and is used to write out the DOT
+     * CR LF terminating sequence in the DATA command, if necessary
+     * complementing the message content with a closing CR LF.
+     */
+    DotTerminatedOutputStream dotTerminatedOutput;
+    /**
+     * This stream wraps {@link #dotTerminatedOutput} and it does the dot
+     * stuffing for the SMTP DATA command.
+     */
+    ExtraDotOutputStream dataOutput;
 
-		public Response(int code, String text)
-		{
-			this.code = code;
-			this.message = text;
-		}
+    /**
+     * Note we bypass this during DATA
+     */
+    PrintWriter writer;
 
-		public int getCode() { return this.code; }
-		public String getMessage() { return this.message; }
+    /**
+     * Result of an SMTP exchange.
+     */
+    public static class Response {
 
-		public boolean isSuccess()
-		{
-			return this.code >= 100 && this.code < 400;
-		}
+        int code;
+        String message;
 
-		@Override
-		public String toString() { return this.code + " " + this.message; }
-	}
+        public Response(int code, String text) {
+            this.code = code;
+            this.message = text;
+        }
 
-	/**
-	 * Creates an unconnected client.
-	 */
-	public SMTPClient()
-	{
-		// nothing to do
-	}
+        public int getCode() {
+            return this.code;
+        }
 
-	/**
-	 * Establishes a connection to host and port.
-	 * 
-	 * @throws UnknownHostException
-	 *             if the hostname cannot be resolved
-	 * @throws IOException
-	 *             if there is a problem connecting to the port
-	 */
-	public SMTPClient(String host, int port) throws UnknownHostException, IOException
-	{
-		this(host, port, null);
-	}
+        public String getMessage() {
+            return this.message;
+        }
 
-	/**
-	 * Establishes a connection to host and port from the specified local socket
-	 * address.
-	 * 
-	 * @param bindpoint
-	 *            the local socket address. If null, the system will pick up an
-	 *            ephemeral port and a valid local address.
-	 * @throws UnknownHostException
-	 *             if the hostname cannot be resolved
-	 * @throws IOException
-	 *             if there is a problem connecting to the port
-	 */
-	public SMTPClient(String host, int port, SocketAddress bindpoint) throws UnknownHostException, IOException
-	{
-		this.bindpoint = bindpoint;
-		connect(host, port);
-	}
+        public boolean isSuccess() {
+            return this.code >= 100 && this.code < 400;
+        }
 
-	/**
-	 * Establishes a connection to host and port.
-	 * 
-	 * @throws IOException
-	 *             if there is a problem connecting to the port
-	 */
-	public void connect(String host, int port) throws IOException
-	{
-		if (connected)
-			throw new IllegalStateException("Already connected");
+        @Override
+        public String toString() {
+            return this.code + " " + this.message;
+        }
+    }
 
-		if (this.hostPort == null)
-			this.hostPort = host + ":" + port;
+    /**
+     * Creates an unconnected client.
+     */
+    public SMTPClient() {
+        // nothing to do
+    }
 
-		if (log.isDebugEnabled())
-			log.debug("Connecting to " + this.hostPort);
+    /**
+     * Establishes a connection to host and port.
+     *
+     * @throws UnknownHostException if the hostname cannot be resolved
+     * @throws IOException if there is a problem connecting to the port
+     */
+    public SMTPClient(String host, int port) throws UnknownHostException, IOException {
+        this(host, port, null);
+    }
 
-		this.socket = createSocket();
-		this.socket.bind(this.bindpoint);
-		this.socket.setSoTimeout(REPLY_TIMEOUT);
-		this.socket.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT);
+    /**
+     * Establishes a connection to host and port from the specified local socket
+     * address.
+     *
+     * @param bindpoint the local socket address. If null, the system will pick
+     * up an ephemeral port and a valid local address.
+     * @throws UnknownHostException if the hostname cannot be resolved
+     * @throws IOException if there is a problem connecting to the port
+     */
+    public SMTPClient(String host, int port, SocketAddress bindpoint) throws UnknownHostException, IOException {
+        this.bindpoint = bindpoint;
+        connect(host, port);
+    }
 
-		try
-		{
-			this.bindpoint = this.socket.getLocalSocketAddress();
+    /**
+     * Establishes a connection to host and port.
+     *
+     * @throws IOException if there is a problem connecting to the port
+     */
+    public void connect(String host, int port) throws IOException {
+        if (connected) {
+            throw new IllegalStateException("Already connected");
+        }
 
-			this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        if (this.hostPort == null) {
+            this.hostPort = host + ":" + port;
+        }
 
-			this.rawOutput = this.socket.getOutputStream();
-			this.dotTerminatedOutput = new DotTerminatedOutputStream(this.rawOutput);
-			this.dataOutput = new ExtraDotOutputStream(this.dotTerminatedOutput);
-			this.writer = new PrintWriter(this.rawOutput, true);
-		}
-		catch (IOException e)
-		{
-			close();
-			throw e;
-		}
+        if (log.isDebugEnabled()) {
+            log.debug("Connecting to " + this.hostPort);
+        }
 
-		connected = true;
-	}
+        this.socket = createSocket();
+        this.socket.bind(this.bindpoint);
+        this.socket.setSoTimeout(REPLY_TIMEOUT);
+        this.socket.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT);
 
-	/**
-	 * Returns a new unconnected socket.
-	 * <p>
-	 * Implementation notice for subclasses: This function is called by the
-	 * constructors which open the connection immediately. In these cases the
-	 * subclass is not yet initialized, therefore subclasses overriding this
-	 * function shouldn't use those constructors.
-	 */
-	protected Socket createSocket()
-	{
-		return new Socket();
-	}
+        try {
+            this.bindpoint = this.socket.getLocalSocketAddress();
 
-	/**
-	 * Returns true if the client is connected to the server.
-	 */
-	public boolean isConnected() {
-		return connected;
-	}
-	/**
-	 * Sends a message to the server, ie "HELO foo.example.com". A newline will
-	 * be appended to the message.
-	 *
-	 * @param msg should not have any newlines
-	 */
-	protected void send(String msg) throws IOException
-	{
-		if (log.isDebugEnabled())
-			log.debug("Client: " + msg);
-		if (!connected)
-			throw new IllegalStateException("Not connected");
+            this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 
-		// Force \r\n since println() behaves differently on different platforms
-		this.writer.print(msg + "\r\n");
-		this.writer.flush();
-	}
+            this.rawOutput = this.socket.getOutputStream();
+            this.dotTerminatedOutput = new DotTerminatedOutputStream(this.rawOutput);
+            this.dataOutput = new ExtraDotOutputStream(this.dotTerminatedOutput);
+            this.writer = new PrintWriter(this.rawOutput, true);
+        } catch (IOException e) {
+            close();
+            throw e;
+        }
 
-	/**
-	 * Note that the response text comes back without trailing newlines.
-	 */
-	protected Response receive() throws IOException
-	{
-		if (!connected)
-			throw new IllegalStateException("Not connected");
+        connected = true;
+    }
 
-		StringBuilder builder = new StringBuilder();
-		String line = null;
+    /**
+     * Returns a new unconnected socket.
+     * <p>
+     * Implementation notice for subclasses: This function is called by the
+     * constructors which open the connection immediately. In these cases the
+     * subclass is not yet initialized, therefore subclasses overriding this
+     * function shouldn't use those constructors.
+     */
+    protected Socket createSocket() {
+        return new Socket();
+    }
 
-		boolean done = false;
-		do
-		{
-			line = this.reader.readLine();
-			if (line == null)
-			{
-				if (builder.length() == 0)
-					throw new EOFException("Server disconnected unexpectedly, no reply received");
-				else
-					throw new IOException("Malformed SMTP reply: " + builder);
-			}
+    /**
+     * Returns true if the client is connected to the server.
+     */
+    public boolean isConnected() {
+        return connected;
+    }
 
-			if (log.isDebugEnabled())
-				log.debug("Server: " + line);
+    /**
+     * Sends a message to the server, ie "HELO foo.example.com". A newline will
+     * be appended to the message.
+     *
+     * @param msg should not have any newlines
+     */
+    protected void send(String msg) throws IOException {
+        if (log.isDebugEnabled()) {
+            log.debug("Client: " + msg);
+        }
+        if (!connected) {
+            throw new IllegalStateException("Not connected");
+        }
 
-			if (line.length() < 4)
-				throw new IOException("Malformed SMTP reply: " + line);
-			builder.append(line.substring(4));
+        // Force \r\n since println() behaves differently on different platforms
+        this.writer.print(msg + "\r\n");
+        this.writer.flush();
+    }
 
-			if (line.charAt(3) == '-')
-				builder.append('\n');
-			else
-				done = true;
-		}
-		while (!done);
+    /**
+     * Note that the response text comes back without trailing newlines.
+     */
+    protected Response receive() throws IOException {
+        if (!connected) {
+            throw new IllegalStateException("Not connected");
+        }
 
-		int code;
-		String codeString = line.substring(0, 3);
-		try
-		{
-			code = Integer.parseInt(codeString);
-		}
-		catch (NumberFormatException e)
-		{
-			throw new IOException("Malformed SMTP reply: " + line, e);
-		}
+        StringBuilder builder = new StringBuilder();
+        String line = null;
 
-		return new Response(code, builder.toString());
-	}
+        boolean done = false;
+        do {
+            line = this.reader.readLine();
+            if (line == null) {
+                if (builder.length() == 0) {
+                    throw new EOFException("Server disconnected unexpectedly, no reply received");
+                } else {
+                    throw new IOException("Malformed SMTP reply: " + builder);
+                }
+            }
 
-	/**
-	 * Sends a message to the server, ie "HELO foo.example.com". A newline will
-	 * be appended to the message.
-	 *
-	 * @param msg should not have any newlines
-	 * @return the response from the server
-	 */
-	public Response sendReceive(String msg) throws IOException
-	{
-		this.send(msg);
-		return this.receive();
-	}
+            if (log.isDebugEnabled()) {
+                log.debug("Server: " + line);
+            }
 
-	/** If response is not success, throw an exception */
-	public Response receiveAndCheck() throws IOException, SMTPException
-	{
-		Response resp = this.receive();
-		if (!resp.isSuccess())
-			throw new SMTPException(resp);
-		return resp;
-	}
+            if (line.length() < 4) {
+                throw new IOException("Malformed SMTP reply: " + line);
+            }
+            builder.append(line.substring(4));
 
-	/** If response is not success, throw an exception */
-	public Response sendAndCheck(String msg) throws IOException, SMTPException
-	{
-		this.send(msg);
-		return this.receiveAndCheck();
-	}
+            if (line.charAt(3) == '-') {
+                builder.append('\n');
+            } else {
+                done = true;
+            }
+        } while (!done);
 
-	/** Logs but otherwise ignores errors */
-	public void close()
-	{
-		connected = false;
+        int code;
+        String codeString = line.substring(0, 3);
+        try {
+            code = Integer.parseInt(codeString);
+        } catch (NumberFormatException e) {
+            throw new IOException("Malformed SMTP reply: " + line, e);
+        }
 
-		if (this.socket != null && !this.socket.isClosed())
-		{
-			try
-			{
-				this.socket.close();
+        return new Response(code, builder.toString());
+    }
 
-				if (log.isDebugEnabled())
-					log.debug("Closed connection to " + this.hostPort);
-			}
-			catch (IOException ex)
-			{
-				log.error("Problem closing connection to " + this.hostPort, ex);
-			}
-		}
-	}
+    /**
+     * Sends a message to the server, ie "HELO foo.example.com". A newline will
+     * be appended to the message.
+     *
+     * @param msg should not have any newlines
+     * @return the response from the server
+     */
+    public Response sendReceive(String msg) throws IOException {
+        this.send(msg);
+        return this.receive();
+    }
 
-	/** */
-	@Override
-	public String toString()
-	{
-		return this.getClass().getSimpleName() + " { " + this.hostPort + "}";
-	}
+    /**
+     * If response is not success, throw an exception
+     */
+    public Response receiveAndCheck() throws IOException, SMTPException {
+        Response resp = this.receive();
+        if (!resp.isSuccess()) {
+            throw new SMTPException(resp);
+        }
+        return resp;
+    }
 
-	/**
-	 * Sets the local socket address. If null, the system will pick up an
-	 * ephemeral port and a valid local address. Default is null.
-	 */
-	public void setBindpoint(SocketAddress bindpoint)
-	{
-		this.bindpoint = bindpoint;
-	}
+    /**
+     * If response is not success, throw an exception
+     */
+    public Response sendAndCheck(String msg) throws IOException, SMTPException {
+        this.send(msg);
+        return this.receiveAndCheck();
+    }
 
-	/**
-	 * Returns the local socket address.
-	 */
-	public SocketAddress getBindpoint()
-	{
-		return bindpoint;
-	}
+    /**
+     * Logs but otherwise ignores errors
+     */
+    public void close() {
+        connected = false;
 
-	/**
-	 * Sets the name of the remote MTA for informative purposes. Default is
-	 * host:port, where host and port are the values which were used to open the
-	 * TCP connection to the server, as they were passed to the connect method.
-	 */
-	public void setHostPort(String hostPort)
-	{
-		this.hostPort = hostPort;
-	}
+        if (this.socket != null && !this.socket.isClosed()) {
+            try {
+                this.socket.close();
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Closed connection to " + this.hostPort);
+                }
+            } catch (IOException ex) {
+                log.error("Problem closing connection to " + this.hostPort, ex);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " { " + this.hostPort + "}";
+    }
+
+    /**
+     * Sets the local socket address. If null, the system will pick up an
+     * ephemeral port and a valid local address. Default is null.
+     */
+    public void setBindpoint(SocketAddress bindpoint) {
+        this.bindpoint = bindpoint;
+    }
+
+    /**
+     * Returns the local socket address.
+     */
+    public SocketAddress getBindpoint() {
+        return bindpoint;
+    }
+
+    /**
+     * Sets the name of the remote MTA for informative purposes. Default is
+     * host:port, where host and port are the values which were used to open the
+     * TCP connection to the server, as they were passed to the connect method.
+     */
+    public void setHostPort(String hostPort) {
+        this.hostPort = hostPort;
+    }
+
     /**
      * @return a nice pretty description of who we are connected to
      */
-    public String getHostPort()
-    {
-            return this.hostPort;
+    public String getHostPort() {
+        return this.hostPort;
     }
 
-	
 }

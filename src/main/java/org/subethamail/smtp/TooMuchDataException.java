@@ -13,17 +13,19 @@ import java.io.IOException;
  * @author Jeff Schnitzer
  */
 @SuppressWarnings("serial")
-public class TooMuchDataException extends IOException
-{
-	/** */
-	public TooMuchDataException()
-	{
-		super();
-	}
+public class TooMuchDataException extends IOException {
 
-	/** */
-	public TooMuchDataException(String message)
-	{
-		super(message);
-	}
+    /**
+     *
+     */
+    public TooMuchDataException() {
+        super();
+    }
+
+    /**
+     *
+     */
+    public TooMuchDataException(String message) {
+        super(message);
+    }
 }

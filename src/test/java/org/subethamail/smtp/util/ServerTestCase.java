@@ -1,101 +1,109 @@
 package org.subethamail.smtp.util;
 
 import junit.framework.TestCase;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.wiser.Wiser;
 
 /**
- * A base class for testing the SMTP server at the raw protocol level.
- * Handles setting up and tearing down of the server.
+ * A base class for testing the SMTP server at the raw protocol level. Handles
+ * setting up and tearing down of the server.
  *
  * @author Jon Stevens
  * @author Jeff Schnitzer
  */
-public abstract class ServerTestCase extends TestCase
-{
-	/** */
-	@SuppressWarnings("unused")
-	private final static Logger log = LoggerFactory.getLogger(ServerTestCase.class);
+public abstract class ServerTestCase extends TestCase {
 
-	/** */
-	public static final int PORT = 2566;
+    /**
+     *
+     */
+    @SuppressWarnings("unused")
+    private final static Logger log = LoggerFactory.getLogger(ServerTestCase.class);
 
-	/**
-	 * Override the accept method in Wiser so we can test
-	 * the accept method().
-	 */
-	public class TestWiser extends Wiser
-	{
-		@Override
-		public boolean accept(String from, String recipient)
-		{
-			if (recipient.equals("failure@subethamail.org"))
-			{
-				return false;
-			}
-			else if (recipient.equals("success@subethamail.org"))
-			{
-				return true;
-			}
-			return true;
-		}
-	}
+    /**
+     *
+     */
+    public static final int PORT = 2566;
 
-	/** */
-	protected TestWiser wiser;
+    /**
+     * Override the accept method in Wiser so we can test the accept method().
+     */
+    public class TestWiser extends Wiser {
 
-	/** */
-	protected Client c;
+        @Override
+        public boolean accept(String from, String recipient) {
+            if (recipient.equals("failure@subethamail.org")) {
+                return false;
+            } else if (recipient.equals("success@subethamail.org")) {
+                return true;
+            }
+            return true;
+        }
+    }
 
-	/** */
-	public ServerTestCase(String name)
-	{
-		super(name);
-	}
+    /**
+     *
+     */
+    protected TestWiser wiser;
 
-	/** */
-	@Override
-	protected void setUp() throws Exception
-	{
-		super.setUp();
+    /**
+     *
+     */
+    protected Client c;
 
-		this.wiser = new TestWiser();
-		this.wiser.setHostname("localhost");
-		this.wiser.setPort(PORT);
-		this.wiser.start();
+    /**
+     *
+     */
+    public ServerTestCase(String name) {
+        super(name);
+    }
 
-		this.c = new Client("localhost", PORT);
-	}
+    /**
+     *
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
 
-	/** */
-	@Override
-	protected void tearDown() throws Exception
-	{
-		this.wiser.stop();
-		this.wiser = null;
+        this.wiser = new TestWiser();
+        this.wiser.setHostname("localhost");
+        this.wiser.setPort(PORT);
+        this.wiser.start();
 
-		this.c.close();
+        this.c = new Client("localhost", PORT);
+    }
 
-		super.tearDown();
-	}
+    /**
+     *
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        this.wiser.stop();
+        this.wiser = null;
 
-	/** */
-	public void send(String msg) throws Exception
-	{
-		this.c.send(msg);
-	}
+        this.c.close();
 
-	/** */
-	public void expect(String msg) throws Exception
-	{
-		this.c.expect(msg);
-	}
+        super.tearDown();
+    }
 
-	/** */
-	public void expectContains(String msg) throws Exception
-	{
-		this.c.expectContains(msg);
-	}
+    /**
+     *
+     */
+    public void send(String msg) throws Exception {
+        this.c.send(msg);
+    }
+
+    /**
+     *
+     */
+    public void expect(String msg) throws Exception {
+        this.c.expect(msg);
+    }
+
+    /**
+     *
+     */
+    public void expectContains(String msg) throws Exception {
+        this.c.expectContains(msg);
+    }
 }

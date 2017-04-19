@@ -2,92 +2,86 @@ package org.subethamail.wiser;
 
 import java.io.ByteArrayInputStream;
 import java.io.PrintStream;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
- * This class wraps a received message and provides
- * a way to generate a JavaMail MimeMessage from the data.
+ * This class wraps a received message and provides a way to generate a JavaMail
+ * MimeMessage from the data.
  *
  * @author Jon Stevens
  */
-public class WiserMessage
-{
-	byte[] messageData;
-	Wiser wiser;
-	String envelopeSender;
-	String envelopeReceiver;
+public class WiserMessage {
 
-	WiserMessage(Wiser wiser, String envelopeSender, String envelopeReceiver, byte[] messageData)
-	{
-		this.wiser = wiser;
-		this.envelopeSender = envelopeSender;
-		this.envelopeReceiver = envelopeReceiver;
-		this.messageData = messageData;
-	}
+    byte[] messageData;
+    Wiser wiser;
+    String envelopeSender;
+    String envelopeReceiver;
 
-	/**
-	 * Generate a JavaMail MimeMessage.
-	 * @throws MessagingException
-	 */
-	public MimeMessage getMimeMessage() throws MessagingException
-	{
-		return new MimeMessage(this.wiser.getSession(), new ByteArrayInputStream(this.messageData));
-	}
+    WiserMessage(Wiser wiser, String envelopeSender, String envelopeReceiver, byte[] messageData) {
+        this.wiser = wiser;
+        this.envelopeSender = envelopeSender;
+        this.envelopeReceiver = envelopeReceiver;
+        this.messageData = messageData;
+    }
 
-	/**
-	 * Get's the raw message DATA.
-	 */
-	public byte[] getData()
-	{
-		return this.messageData;
-	}
+    /**
+     * Generate a JavaMail MimeMessage.
+     *
+     * @throws MessagingException
+     */
+    public MimeMessage getMimeMessage() throws MessagingException {
+        return new MimeMessage(this.wiser.getSession(), new ByteArrayInputStream(this.messageData));
+    }
 
-	/**
-	 * Get's the RCPT TO:
-	 */
-	public String getEnvelopeReceiver()
-	{
-		return this.envelopeReceiver;
-	}
+    /**
+     * Get's the raw message DATA.
+     */
+    public byte[] getData() {
+        return this.messageData;
+    }
 
-	/**
-	 * Get's the MAIL FROM:
-	 */
-	public String getEnvelopeSender()
-	{
-		return this.envelopeSender;
-	}
+    /**
+     * Get's the RCPT TO:
+     */
+    public String getEnvelopeReceiver() {
+        return this.envelopeReceiver;
+    }
 
-	/**
-	 * Dumps the rough contents of the message for debugging purposes
-	 */
-	public void dumpMessage(PrintStream out) throws MessagingException
-	{
-		out.println("===== Dumping message =====");
+    /**
+     * Get's the MAIL FROM:
+     */
+    public String getEnvelopeSender() {
+        return this.envelopeSender;
+    }
 
-		out.println("Envelope sender: " + this.getEnvelopeSender());
-		out.println("Envelope recipient: " + this.getEnvelopeReceiver());
+    /**
+     * Dumps the rough contents of the message for debugging purposes
+     */
+    public void dumpMessage(PrintStream out) throws MessagingException {
+        out.println("===== Dumping message =====");
 
-		// It should all be convertible with ascii or utf8
-		String content = new String(this.getData());
-		out.println(content);
+        out.println("Envelope sender: " + this.getEnvelopeSender());
+        out.println("Envelope recipient: " + this.getEnvelopeReceiver());
 
-		out.println("===== End message dump =====");
-	}
+        // It should all be convertible with ascii or utf8
+        String content = new String(this.getData());
+        out.println(content);
 
-	/**
-	 * Implementation of toString()
-	 *
-	 * @return getData() as a string or an empty string if getData is null
-	 */
-	@Override
-	public String toString()
-	{
-		if (this.getData() == null)
-			return "";
+        out.println("===== End message dump =====");
+    }
 
-		return new String(this.getData());
-	}
+    /**
+     * Implementation of toString()
+     *
+     * @return getData() as a string or an empty string if getData is null
+     */
+    @Override
+    public String toString() {
+        if (this.getData() == null) {
+            return "";
+        }
+
+        return new String(this.getData());
+    }
 }

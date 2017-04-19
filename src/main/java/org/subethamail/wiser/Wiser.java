@@ -2,7 +2,6 @@
  * $Id$
  * $URL$
  */
-
 package org.subethamail.wiser;
 
 import java.io.BufferedInputStream;
@@ -14,10 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
 import javax.mail.MessagingException;
 import javax.mail.Session;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.TooMuchDataException;
@@ -26,156 +23,166 @@ import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
 import org.subethamail.smtp.server.SMTPServer;
 
 /**
- * Wiser is a tool for unit testing applications that send mail.  Your unit
- * tests can start Wiser, run tests which generate emails, then examine the
- * emails that Wiser received and verify their integrity.
+ * Wiser is a tool for unit testing applications that send mail. Your unit tests
+ * can start Wiser, run tests which generate emails, then examine the emails
+ * that Wiser received and verify their integrity.
  *
- * Wiser is not intended to be a "real" mail server and is not adequate
- * for that purpose; it simply stores all mail in memory.  Use the
- * MessageHandlerFactory interface (optionally with the SimpleMessageListenerAdapter)
- * of SubEthaSMTP instead.
+ * Wiser is not intended to be a "real" mail server and is not adequate for that
+ * purpose; it simply stores all mail in memory. Use the MessageHandlerFactory
+ * interface (optionally with the SimpleMessageListenerAdapter) of SubEthaSMTP
+ * instead.
  *
  * @author Jon Stevens
  * @author Jeff Schnitzer
  */
-public class Wiser implements SimpleMessageListener
-{
-	/** */
-	private final static Logger log = LoggerFactory.getLogger(Wiser.class);
+public class Wiser implements SimpleMessageListener {
 
-	/** */
-	SMTPServer server;
+    /**
+     *
+     */
+    private final static Logger log = LoggerFactory.getLogger(Wiser.class);
 
-	/** */
-	protected List<WiserMessage> messages = Collections.synchronizedList(new ArrayList<WiserMessage>());
+    /**
+     *
+     */
+    SMTPServer server;
 
-	/**
-	 * Create a new SMTP server with this class as the listener.
-	 * The default port is 25. Call setPort()/setHostname() before
-	 * calling start().
-	 */
-	public Wiser()
-	{
-		this.server = new SMTPServer(new SimpleMessageListenerAdapter(this));
-	}
+    /**
+     *
+     */
+    protected List<WiserMessage> messages = Collections.synchronizedList(new ArrayList<WiserMessage>());
 
-	/** Convenience constructor */
-	public Wiser(int port)
-	{
-		this();
-		this.setPort(port);
-	}
+    /**
+     * Create a new SMTP server with this class as the listener. The default
+     * port is 25. Call setPort()/setHostname() before calling start().
+     */
+    public Wiser() {
+        this.server = new SMTPServer(new SimpleMessageListenerAdapter(this));
+    }
 
-	/**
-	 * The port that the server should listen on.
-	 * @param port
-	 */
-	public void setPort(int port)
-	{
-		this.server.setPort(port);
-	}
+    /**
+     * Convenience constructor
+     */
+    public Wiser(int port) {
+        this();
+        this.setPort(port);
+    }
 
-	/**
-	 * The hostname that the server should listen on.
-	 * @param hostname
-	 */
-	public void setHostname(String hostname)
-	{
-		this.server.setHostName(hostname);
-	}
+    /**
+     * The port that the server should listen on.
+     *
+     * @param port
+     */
+    public void setPort(int port) {
+        this.server.setPort(port);
+    }
 
-	/** Starts the SMTP Server */
-	public void start()
-	{
-		this.server.start();
-	}
+    /**
+     * The hostname that the server should listen on.
+     *
+     * @param hostname
+     */
+    public void setHostname(String hostname) {
+        this.server.setHostName(hostname);
+    }
 
-	/** Stops the SMTP Server */
-	public void stop()
-	{
-		this.server.stop();
-	}
+    /**
+     * Starts the SMTP Server
+     */
+    public void start() {
+        this.server.start();
+    }
 
-	/** A main() for this class. Starts up the server. */
-	public static void main(String[] args) throws Exception
-	{
-		Wiser wiser = new Wiser();
-		wiser.start();
-	}
+    /**
+     * Stops the SMTP Server
+     */
+    public void stop() {
+        this.server.stop();
+    }
 
-	/** Always accept everything */
-	public boolean accept(String from, String recipient)
-	{
-		if (log.isDebugEnabled())
-			log.debug("Accepting mail from " + from + " to " + recipient);
+    /**
+     * A main() for this class. Starts up the server.
+     */
+    public static void main(String[] args) throws Exception {
+        Wiser wiser = new Wiser();
+        wiser.start();
+    }
 
-		return true;
-	}
+    /**
+     * Always accept everything
+     */
+    public boolean accept(String from, String recipient) {
+        if (log.isDebugEnabled()) {
+            log.debug("Accepting mail from " + from + " to " + recipient);
+        }
 
-	/** Cache the messages in memory */
-	public void deliver(String from, String recipient, InputStream data) throws TooMuchDataException, IOException
-	{
-		if (log.isDebugEnabled())
-			log.debug("Delivering mail from " + from + " to " + recipient);
+        return true;
+    }
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		data = new BufferedInputStream(data);
+    /**
+     * Cache the messages in memory
+     */
+    public void deliver(String from, String recipient, InputStream data) throws TooMuchDataException, IOException {
+        if (log.isDebugEnabled()) {
+            log.debug("Delivering mail from " + from + " to " + recipient);
+        }
 
-		// read the data from the stream
-		int current;
-		while ((current = data.read()) >= 0)
-		{
-			out.write(current);
-		}
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        data = new BufferedInputStream(data);
 
-		byte[] bytes = out.toByteArray();
+        // read the data from the stream
+        int current;
+        while ((current = data.read()) >= 0) {
+            out.write(current);
+        }
 
-		if (log.isDebugEnabled())
-			log.debug("Creating message from data with " + bytes.length + " bytes");
+        byte[] bytes = out.toByteArray();
 
-		// create a new WiserMessage.
-		this.messages.add(new WiserMessage(this, from, recipient, bytes));
-	}
+        if (log.isDebugEnabled()) {
+            log.debug("Creating message from data with " + bytes.length + " bytes");
+        }
 
-	/**
-	 * Creates the JavaMail Session object for use in WiserMessage
-	 */
-	protected Session getSession()
-	{
-		return Session.getDefaultInstance(new Properties());
-	}
+        // create a new WiserMessage.
+        this.messages.add(new WiserMessage(this, from, recipient, bytes));
+    }
 
-	/**
-	 * Returns the list of WiserMessages.
-	 * <p>
-	 * The number of mail transactions and the number of mails may be different.
-	 * If a message is received with multiple recipients in a single mail
-	 * transaction, then the list will contain more WiserMessage instances, one
-	 * for each recipient.
-	 */
-	public List<WiserMessage> getMessages()
-	{
-		return this.messages;
-	}
+    /**
+     * Creates the JavaMail Session object for use in WiserMessage
+     */
+    protected Session getSession() {
+        return Session.getDefaultInstance(new Properties());
+    }
 
-	/**
-	 * @return the server implementation
-	 */
-	public SMTPServer getServer()
-	{
-		return this.server;
-	}
+    /**
+     * Returns the list of WiserMessages.
+     * <p>
+     * The number of mail transactions and the number of mails may be different.
+     * If a message is received with multiple recipients in a single mail
+     * transaction, then the list will contain more WiserMessage instances, one
+     * for each recipient.
+     */
+    public List<WiserMessage> getMessages() {
+        return this.messages;
+    }
 
-	/**
-	 * For debugging purposes, dumps a rough outline of the messages to the output stream.
-	 */
-	public void dumpMessages(PrintStream out) throws MessagingException
-	{
-		out.println("----- Start printing messages -----");
+    /**
+     * @return the server implementation
+     */
+    public SMTPServer getServer() {
+        return this.server;
+    }
 
-		for (WiserMessage wmsg: this.getMessages())
-			wmsg.dumpMessage(out);
+    /**
+     * For debugging purposes, dumps a rough outline of the messages to the
+     * output stream.
+     */
+    public void dumpMessages(PrintStream out) throws MessagingException {
+        out.println("----- Start printing messages -----");
 
-		out.println("----- End printing messages -----");
-	}
+        for (WiserMessage wmsg : this.getMessages()) {
+            wmsg.dumpMessage(out);
+        }
+
+        out.println("----- End printing messages -----");
+    }
 }

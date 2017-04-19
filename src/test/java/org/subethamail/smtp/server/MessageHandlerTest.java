@@ -2,12 +2,9 @@ package org.subethamail.smtp.server;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.mail.MessagingException;
-
 import mockit.Expectations;
 import mockit.Mocked;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,175 +17,178 @@ import org.subethamail.smtp.client.SmartClient;
 import org.subethamail.smtp.util.TextUtils;
 
 /**
- * This class tests whether the event handler methods defined in MessageHandler 
- * are called at the appropriate times and in good order.  
+ * This class tests whether the event handler methods defined in MessageHandler
+ * are called at the appropriate times and in good order.
  */
 public class MessageHandlerTest {
-	@Mocked
-	private MessageHandlerFactory messageHandlerFactory;
 
-	@Mocked
-	private MessageHandler messageHandler;
+    @Mocked
+    private MessageHandlerFactory messageHandlerFactory;
 
-	@Mocked
-	private MessageHandler messageHandler2;
+    @Mocked
+    private MessageHandler messageHandler;
 
-	private SMTPServer smtpServer;
+    @Mocked
+    private MessageHandler messageHandler2;
 
-	@Before
-	public void setup() {
-		smtpServer = new SMTPServer(messageHandlerFactory);
-		smtpServer.setPort(2566);
-		smtpServer.start();
-	}
+    private SMTPServer smtpServer;
 
-	@Test
-	public void testCompletedMailTransaction() throws Exception {
+    @Before
+    public void setup() {
+        smtpServer = new SMTPServer(messageHandlerFactory);
+        smtpServer.setPort(2566);
+        smtpServer.start();
+    }
 
-		new Expectations() {
-			{
-				messageHandlerFactory.create((MessageContext) any);
-				result = messageHandler;
+    @Test
+    public void testCompletedMailTransaction() throws Exception {
 
-				messageHandler.from(anyString);
-				messageHandler.recipient(anyString);
-				messageHandler.data((InputStream) any);
-				messageHandler.done();
-			}
-		};
+        new Expectations() {
+            {
+                messageHandlerFactory.create((MessageContext) any);
+                result = messageHandler;
 
-		SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
-				"localhost");
-		client.from("john@example.com");
-		client.to("jane@example.com");
-		client.dataStart();
-		client.dataWrite(TextUtils.getAsciiBytes("body"), 4);
-		client.dataEnd();
-		client.quit();
-		smtpServer.stop(); // wait for the server to catch up
-	}
+                messageHandler.from(anyString);
+                messageHandler.recipient(anyString);
+                messageHandler.data((InputStream) any);
+                messageHandler.done();
+            }
+        };
 
-	@Test
-	public void testDisconnectImmediately() throws Exception {
+        SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
+                "localhost");
+        client.from("john@example.com");
+        client.to("jane@example.com");
+        client.dataStart();
+        client.dataWrite(TextUtils.getAsciiBytes("body"), 4);
+        client.dataEnd();
+        client.quit();
+        smtpServer.stop(); // wait for the server to catch up
+    }
 
-		new Expectations() {
-			{
-				messageHandlerFactory.create((MessageContext) any);
-				times = 0;
-			}
-		};
+    @Test
+    public void testDisconnectImmediately() throws Exception {
 
-		SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
-				"localhost");
-		client.quit();
-		smtpServer.stop(); // wait for the server to catch up
-	}
+        new Expectations() {
+            {
+                messageHandlerFactory.create((MessageContext) any);
+                times = 0;
+            }
+        };
 
-	@Test
-	public void testAbortedMailTransaction() throws Exception {
+        SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
+                "localhost");
+        client.quit();
+        smtpServer.stop(); // wait for the server to catch up
+    }
 
-		new Expectations() {
-			{
-				messageHandlerFactory.create((MessageContext) any);
-				result = messageHandler;
+    @Test
+    public void testAbortedMailTransaction() throws Exception {
 
-				messageHandler.from(anyString);
-				messageHandler.done();
-			}
-		};
+        new Expectations() {
+            {
+                messageHandlerFactory.create((MessageContext) any);
+                result = messageHandler;
 
-		SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
-				"localhost");
-		client.from("john@example.com");
-		client.quit();
-		smtpServer.stop(); // wait for the server to catch up
-	}
+                messageHandler.from(anyString);
+                messageHandler.done();
+            }
+        };
 
-	@Test
-	public void testTwoMailsInOneSession() throws Exception {
+        SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
+                "localhost");
+        client.from("john@example.com");
+        client.quit();
+        smtpServer.stop(); // wait for the server to catch up
+    }
 
-		new Expectations() {
-			{
-				messageHandlerFactory.create((MessageContext) any);
-				result = messageHandler;
+    @Test
+    public void testTwoMailsInOneSession() throws Exception {
 
-				onInstance(messageHandler).from(anyString);
-				onInstance(messageHandler).recipient(anyString);
-				onInstance(messageHandler).data((InputStream) any);
-				onInstance(messageHandler).done();
+        new Expectations() {
+            {
+                messageHandlerFactory.create((MessageContext) any);
+                result = messageHandler;
 
-				messageHandlerFactory.create((MessageContext) any);
-				result = messageHandler2;
+                onInstance(messageHandler).from(anyString);
+                onInstance(messageHandler).recipient(anyString);
+                onInstance(messageHandler).data((InputStream) any);
+                onInstance(messageHandler).done();
 
-				onInstance(messageHandler2).from(anyString);
-				onInstance(messageHandler2).recipient(anyString);
-				onInstance(messageHandler2).data((InputStream) any);
-				onInstance(messageHandler2).done();
-			}
-		};
+                messageHandlerFactory.create((MessageContext) any);
+                result = messageHandler2;
 
-		SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
-				"localhost");
+                onInstance(messageHandler2).from(anyString);
+                onInstance(messageHandler2).recipient(anyString);
+                onInstance(messageHandler2).data((InputStream) any);
+                onInstance(messageHandler2).done();
+            }
+        };
 
-		client.from("john1@example.com");
-		client.to("jane1@example.com");
-		client.dataStart();
-		client.dataWrite(TextUtils.getAsciiBytes("body1"), 5);
-		client.dataEnd();
+        SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
+                "localhost");
 
-		client.from("john2@example.com");
-		client.to("jane2@example.com");
-		client.dataStart();
-		client.dataWrite(TextUtils.getAsciiBytes("body2"), 5);
-		client.dataEnd();
+        client.from("john1@example.com");
+        client.to("jane1@example.com");
+        client.dataStart();
+        client.dataWrite(TextUtils.getAsciiBytes("body1"), 5);
+        client.dataEnd();
 
-		client.quit();
+        client.from("john2@example.com");
+        client.to("jane2@example.com");
+        client.dataStart();
+        client.dataWrite(TextUtils.getAsciiBytes("body2"), 5);
+        client.dataEnd();
 
-		smtpServer.stop(); // wait for the server to catch up
-	}
-	
-	/**
-	 * Test for issue 56: rejecting a Mail From causes IllegalStateException in
-	 * the next Mail From attempt.
-	 * @throws RejectException 
-	 * @see <a href=http://code.google.com/p/subethasmtp/issues/detail?id=56>Issue 56</a>
-	 */
-	@Test
-	public void testMailFromRejectedFirst() throws IOException, MessagingException, RejectException
-	{
-		new Expectations() {
-			{
-				messageHandlerFactory.create((MessageContext) any);
-				result = messageHandler;
+        client.quit();
 
-				onInstance(messageHandler).from(anyString);
-				result = new RejectException("Test MAIL FROM rejection");
-				onInstance(messageHandler).done();
+        smtpServer.stop(); // wait for the server to catch up
+    }
 
-				messageHandlerFactory.create((MessageContext) any);
-				result = messageHandler2;
+    /**
+     * Test for issue 56: rejecting a Mail From causes IllegalStateException in
+     * the next Mail From attempt.
+     *
+     * @throws RejectException
+     * @see
+     * <a href=http://code.google.com/p/subethasmtp/issues/detail?id=56>Issue
+     * 56</a>
+     */
+    @Test
+    public void testMailFromRejectedFirst() throws IOException, MessagingException, RejectException {
+        new Expectations() {
+            {
+                messageHandlerFactory.create((MessageContext) any);
+                result = messageHandler;
 
-				onInstance(messageHandler2).from(anyString);
-				onInstance(messageHandler2).done();
-			}
-		};
+                onInstance(messageHandler).from(anyString);
+                result = new RejectException("Test MAIL FROM rejection");
+                onInstance(messageHandler).done();
 
-		SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
-				"localhost");
+                messageHandlerFactory.create((MessageContext) any);
+                result = messageHandler2;
 
-		boolean expectedRejectReceived = false;
-		try {
-			client.from("john1@example.com");
-		} catch (SMTPException e) {
-			expectedRejectReceived = true;
-		}
-		Assert.assertTrue(expectedRejectReceived);
-		
-		client.from("john2@example.com");
-		client.quit();
+                onInstance(messageHandler2).from(anyString);
+                onInstance(messageHandler2).done();
+            }
+        };
 
-		smtpServer.stop(); // wait for the server to catch up
-		
-	}
-	
+        SmartClient client = new SmartClient("localhost", smtpServer.getPort(),
+                "localhost");
+
+        boolean expectedRejectReceived = false;
+        try {
+            client.from("john1@example.com");
+        } catch (SMTPException e) {
+            expectedRejectReceived = true;
+        }
+        Assert.assertTrue(expectedRejectReceived);
+
+        client.from("john2@example.com");
+        client.quit();
+
+        smtpServer.stop(); // wait for the server to catch up
+
+    }
+
 }

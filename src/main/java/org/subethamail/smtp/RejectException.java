@@ -10,39 +10,44 @@ package org.subethamail.smtp;
  * @author Jeff Schnitzer
  */
 @SuppressWarnings("serial")
-public class RejectException extends Exception
-{
-	int code;
+public class RejectException extends Exception {
 
-	/** */
-	public RejectException()
-	{
-		this("Transaction failed");
-	}
+    int code;
 
-	/** */
-	public RejectException(String message)
-	{
-		this(554, message);
-	}
+    /**
+     *
+     */
+    public RejectException() {
+        this("Transaction failed");
+    }
 
-	/** */
-	public RejectException(int code, String message)
-	{
-		super(message);
+    /**
+     *
+     */
+    public RejectException(String message) {
+        this(554, message);
+    }
 
-		this.code = code;
-	}
+    /**
+     *
+     */
+    public RejectException(int code, String message) {
+        super(message);
 
-	/** */
-	public int getCode()
-	{
-		return this.code;
-	}
-	
-	/** */
-	public String getErrorResponse()
-	{
-		return this.code + " " + this.getMessage();
-	}
+        this.code = code;
+    }
+
+    /**
+     *
+     */
+    public int getCode() {
+        return this.code;
+    }
+
+    /**
+     *
+     */
+    public String getErrorResponse() {
+        return this.code + " " + this.getMessage();
+    }
 }

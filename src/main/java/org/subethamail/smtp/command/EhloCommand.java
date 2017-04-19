@@ -2,7 +2,6 @@ package org.subethamail.smtp.command;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.subethamail.smtp.AuthenticationHandlerFactory;
 import org.subethamail.smtp.server.BaseCommand;
 import org.subethamail.smtp.server.Session;
@@ -14,27 +13,28 @@ import org.subethamail.smtp.util.TextUtils;
  * @author Jeff Schnitzer
  * @author Scott Hernandez
  */
-public class EhloCommand extends BaseCommand
-{
-	/** */
-	public EhloCommand()
-	{
-		super("EHLO", "Introduce yourself.", "<hostname>");
-	}
+public class EhloCommand extends BaseCommand {
 
-	/** */
-	@Override
-	public void execute(String commandString, Session sess) throws IOException
-	{
-		String[] args = this.getArgs(commandString);
-		if (args.length < 2)
-		{
-			sess.sendResponse("501 Syntax: EHLO hostname");
-			return;
-		}
+    /**
+     *
+     */
+    public EhloCommand() {
+        super("EHLO", "Introduce yourself.", "<hostname>");
+    }
 
-		sess.resetMailTransaction();
-		sess.setHelo(args[1]);
+    /**
+     *
+     */
+    @Override
+    public void execute(String commandString, Session sess) throws IOException {
+        String[] args = this.getArgs(commandString);
+        if (args.length < 2) {
+            sess.sendResponse("501 Syntax: EHLO hostname");
+            return;
+        }
+
+        sess.resetMailTransaction();
+        sess.setHelo(args[1]);
 
 //		postfix returns...
 //		250-server.host.name
@@ -42,45 +42,39 @@ public class EhloCommand extends BaseCommand
 //		250-SIZE 10240000
 //		250-ETRN
 //		250 8BITMIME
+        // Once upon a time this code tracked whether or not HELO/EHLO has been seen
+        // already and gave an error msg.  However, this is stupid and pointless.
+        // Postfix doesn't care, so we won't either.  If you want more, read:
+        // http://homepages.tesco.net/J.deBoynePollard/FGA/smtp-avoid-helo.html
+        StringBuilder response = new StringBuilder();
 
-		// Once upon a time this code tracked whether or not HELO/EHLO has been seen
-		// already and gave an error msg.  However, this is stupid and pointless.
-		// Postfix doesn't care, so we won't either.  If you want more, read:
-		// http://homepages.tesco.net/J.deBoynePollard/FGA/smtp-avoid-helo.html
+        response.append("250-");
+        response.append(sess.getServer().getHostName());
+        response.append("\r\n" + "250-8BITMIME");
 
-		StringBuilder response = new StringBuilder();
+        int maxSize = sess.getServer().getMaxMessageSize();
+        if (maxSize > 0) {
+            response.append("\r\n" + "250-SIZE ");
+            response.append(maxSize);
+        }
 
-		response.append("250-");
-		response.append(sess.getServer().getHostName());
-		response.append("\r\n" + "250-8BITMIME");
+        // Enabling / Hiding TLS is a server setting
+        if (sess.getServer().getEnableTLS() && !sess.getServer().getHideTLS()) {
+            response.append("\r\n" + "250-STARTTLS");
+        }
 
-		int maxSize = sess.getServer().getMaxMessageSize();
-		if (maxSize > 0)
-		{
-			response.append("\r\n" + "250-SIZE ");
-			response.append(maxSize);
-		}
+        // Check to see if we support authentication
+        AuthenticationHandlerFactory authFact = sess.getServer().getAuthenticationHandlerFactory();
+        if (authFact != null) {
+            List<String> supportedMechanisms = authFact.getAuthenticationMechanisms();
+            if (!supportedMechanisms.isEmpty()) {
+                response.append("\r\n" + "250-" + AuthCommand.VERB + " ");
+                response.append(TextUtils.joinTogether(supportedMechanisms, " "));
+            }
+        }
 
-		// Enabling / Hiding TLS is a server setting
-		if (sess.getServer().getEnableTLS() && !sess.getServer().getHideTLS())
-		{
-			response.append("\r\n" + "250-STARTTLS");
-		}
+        response.append("\r\n" + "250 Ok");
 
-		// Check to see if we support authentication
-		AuthenticationHandlerFactory authFact = sess.getServer().getAuthenticationHandlerFactory();
-		if (authFact != null)
-		{
-			List<String> supportedMechanisms = authFact.getAuthenticationMechanisms();
-			if (!supportedMechanisms.isEmpty())
-			{
-				response.append("\r\n" + "250-" + AuthCommand.VERB + " ");
-				response.append(TextUtils.joinTogether(supportedMechanisms, " "));
-			}
-		}
-
-		response.append("\r\n" + "250 Ok");
-
-		sess.sendResponse(response.toString());
-	}
+        sess.sendResponse(response.toString());
+    }
 }

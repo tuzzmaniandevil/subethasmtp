@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.DropConnectionException;
@@ -15,67 +14,78 @@ import org.subethamail.smtp.DropConnectionException;
  * @author Jeff Schnitzer
  * @author Scott Hernandez
  */
-abstract public class BaseCommand implements Command
-{
-	@SuppressWarnings("unused")
-	private final static Logger log = LoggerFactory.getLogger(BaseCommand.class);
+abstract public class BaseCommand implements Command {
 
-	/** Name of the command, ie HELO */
-	private String name;
-	/** The help message for this command*/
-	private HelpMessage helpMsg;
+    @SuppressWarnings("unused")
+    private final static Logger log = LoggerFactory.getLogger(BaseCommand.class);
 
-	/** */
-	protected BaseCommand(String name, String help)
-	{
-		this.name = name;
-		this.helpMsg = new HelpMessage(name, help);
-	}
+    /**
+     * Name of the command, ie HELO
+     */
+    private String name;
+    /**
+     * The help message for this command
+     */
+    private HelpMessage helpMsg;
 
-	/** */
-	protected BaseCommand(String name, String help, String argumentDescription)
-	{
-		this.name = name;
-		this.helpMsg =  new HelpMessage(name, help, argumentDescription);
-	}
+    /**
+     *
+     */
+    protected BaseCommand(String name, String help) {
+        this.name = name;
+        this.helpMsg = new HelpMessage(name, help);
+    }
 
-	/**
-	 * This is the main method that you need to override in order to implement a command.
-	 */
-	abstract public void execute(String commandString, Session context)
-			throws IOException, DropConnectionException;
+    /**
+     *
+     */
+    protected BaseCommand(String name, String help, String argumentDescription) {
+        this.name = name;
+        this.helpMsg = new HelpMessage(name, help, argumentDescription);
+    }
 
-	/** */
-	public HelpMessage getHelp()
-	{
-		return this.helpMsg;
-	}
+    /**
+     * This is the main method that you need to override in order to implement a
+     * command.
+     */
+    abstract public void execute(String commandString, Session context)
+            throws IOException, DropConnectionException;
 
-	/** */
-	public String getName()
-	{
-		return this.name;
-	}
+    /**
+     *
+     */
+    public HelpMessage getHelp() {
+        return this.helpMsg;
+    }
 
-	/** */
-	protected String getArgPredicate(String commandString)
-	{
-		if (commandString == null || commandString.length() < 4)
-			return "";
+    /**
+     *
+     */
+    public String getName() {
+        return this.name;
+    }
 
-		return commandString.substring(4).trim();
-	}
+    /**
+     *
+     */
+    protected String getArgPredicate(String commandString) {
+        if (commandString == null || commandString.length() < 4) {
+            return "";
+        }
 
-	/** */
-	protected String[] getArgs(String commandString)
-	{
-		List<String> strings = new ArrayList<String>();
-		StringTokenizer stringTokenizer = new StringTokenizer(commandString);
-		while (stringTokenizer.hasMoreTokens())
-		{
-			strings.add(stringTokenizer.nextToken());
-		}
+        return commandString.substring(4).trim();
+    }
 
-		return strings.toArray(new String[strings.size()]);
-	}
+    /**
+     *
+     */
+    protected String[] getArgs(String commandString) {
+        List<String> strings = new ArrayList<String>();
+        StringTokenizer stringTokenizer = new StringTokenizer(commandString);
+        while (stringTokenizer.hasMoreTokens()) {
+            strings.add(stringTokenizer.nextToken());
+        }
+
+        return strings.toArray(new String[strings.size()]);
+    }
 }

@@ -11,25 +11,24 @@ import org.subethamail.smtp.util.TextUtils;
 /**
  * @author Evgeny Naumenko
  */
-public class RequireAuthTest  extends ServerTestCase
-{
+public class RequireAuthTest extends ServerTestCase {
+
     static final String REQUIRED_USERNAME = "myUserName";
     static final String REQUIRED_PASSWORD = "mySecret01";
 
-    class RequiredUsernamePasswordValidator implements UsernamePasswordValidator
-    {
-        public void login(String username, String password) throws LoginFailedException
-        {
-            if (!username.equals(REQUIRED_USERNAME) || !password.equals(REQUIRED_PASSWORD))
-            {
+    class RequiredUsernamePasswordValidator implements UsernamePasswordValidator {
+
+        public void login(String username, String password) throws LoginFailedException {
+            if (!username.equals(REQUIRED_USERNAME) || !password.equals(REQUIRED_PASSWORD)) {
                 throw new LoginFailedException();
             }
         }
     }
 
-    /** */
-    public RequireAuthTest(String name)
-    {
+    /**
+     *
+     */
+    public RequireAuthTest(String name) {
         super(name);
     }
 
@@ -37,10 +36,9 @@ public class RequireAuthTest  extends ServerTestCase
       * (non-Javadoc)
       *
       * @see org.subethamail.smtp.ServerTestCase#setUp()
-      */
+     */
     @Override
-    protected void setUp() throws Exception
-    {
+    protected void setUp() throws Exception {
         this.wiser = new TestWiser();
         this.wiser.setHostname("localhost");
         this.wiser.setPort(PORT);
@@ -58,16 +56,16 @@ public class RequireAuthTest  extends ServerTestCase
       * (non-Javadoc)
       *
       * @see org.subethamail.smtp.ServerTestCase#tearDown()
-      */
+     */
     @Override
-    protected void tearDown() throws Exception
-    {
+    protected void tearDown() throws Exception {
         super.tearDown();
     }
 
-    /** */
-    public void testAuthRequired() throws Exception
-    {
+    /**
+     *
+     */
+    public void testAuthRequired() throws Exception {
         this.expect("220");
 
         this.send("HELO foo.com");
@@ -98,9 +96,10 @@ public class RequireAuthTest  extends ServerTestCase
         this.expect("221 Bye");
     }
 
-    /** */
-    public void testAuthSuccess() throws Exception
-    {
+    /**
+     *
+     */
+    public void testAuthSuccess() throws Exception {
         this.expect("220");
 
         this.send("HELO foo.com");

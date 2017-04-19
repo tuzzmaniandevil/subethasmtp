@@ -5,82 +5,87 @@ import org.subethamail.smtp.util.ServerTestCase;
 /**
  * @author Jon Stevens
  */
-public class DataTest extends ServerTestCase
-{
-	/** */
-	public DataTest(String name)
-	{
-		super(name);
-	}
+public class DataTest extends ServerTestCase {
 
-	/** */
-	public void testNeedMail() throws Exception
-	{
-		this.expect("220");
+    /**
+     *
+     */
+    public DataTest(String name) {
+        super(name);
+    }
 
-		this.send("HELO foo.com");
-		this.expect("250");
+    /**
+     *
+     */
+    public void testNeedMail() throws Exception {
+        this.expect("220");
 
-		this.send("DATA");
-		this.expect("503 5.5.1 Error: need MAIL command");
-	}
+        this.send("HELO foo.com");
+        this.expect("250");
 
-	/** */
-	public void testNeedRcpt() throws Exception
-	{
-		this.expect("220");
+        this.send("DATA");
+        this.expect("503 5.5.1 Error: need MAIL command");
+    }
 
-		this.send("HELO foo.com");
-		this.expect("250");
+    /**
+     *
+     */
+    public void testNeedRcpt() throws Exception {
+        this.expect("220");
 
-		this.send("MAIL FROM: success@subethamail.org");
-		this.expect("250");
+        this.send("HELO foo.com");
+        this.expect("250");
 
-		this.send("DATA");
-		this.expect("503 Error: need RCPT command");
-	}
+        this.send("MAIL FROM: success@subethamail.org");
+        this.expect("250");
 
-	/** */
-	public void testData() throws Exception
-	{
-		this.expect("220");
+        this.send("DATA");
+        this.expect("503 Error: need RCPT command");
+    }
 
-		this.send("HELO foo.com");
-		this.expect("250");
+    /**
+     *
+     */
+    public void testData() throws Exception {
+        this.expect("220");
 
-		this.send("MAIL FROM: success@subethamail.org");
-		this.expect("250");
+        this.send("HELO foo.com");
+        this.expect("250");
 
-		this.send("RCPT TO: success@subethamail.org");
-		this.expect("250");
+        this.send("MAIL FROM: success@subethamail.org");
+        this.expect("250");
 
-		this.send("DATA");
-		this.expect("354 End data with <CR><LF>.<CR><LF>");
-	}
+        this.send("RCPT TO: success@subethamail.org");
+        this.expect("250");
 
-	/** */
-	public void testRsetAfterData() throws Exception
-	{
-		this.expect("220");
+        this.send("DATA");
+        this.expect("354 End data with <CR><LF>.<CR><LF>");
+    }
 
-		this.send("HELO foo.com");
-		this.expect("250");
+    /**
+     *
+     */
+    public void testRsetAfterData() throws Exception {
+        this.expect("220");
 
-		this.send("MAIL FROM: success@subethamail.org");
-		this.expect("250");
+        this.send("HELO foo.com");
+        this.expect("250");
 
-		this.send("RCPT TO: success@subethamail.org");
-		this.expect("250");
+        this.send("MAIL FROM: success@subethamail.org");
+        this.expect("250");
 
-		this.send("DATA");
-		this.expect("354 End data with <CR><LF>.<CR><LF>");
+        this.send("RCPT TO: success@subethamail.org");
+        this.expect("250");
 
-		this.send("alsdkfj \r\n.");
+        this.send("DATA");
+        this.expect("354 End data with <CR><LF>.<CR><LF>");
 
-		this.send("RSET");
-		this.expect("250 Ok");
+        this.send("alsdkfj \r\n.");
 
-		this.send("HELO foo.com");
-		this.expect("250");
-	}
+        this.send("RSET");
+        this.expect("250 Ok");
+
+        this.send("HELO foo.com");
+        this.expect("250");
+    }
 }
