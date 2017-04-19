@@ -4,28 +4,33 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.*;
 import org.subethamail.smtp.server.SMTPServer;
 
 public class BasicSMTPServer {
 
+    private final static Logger log = LoggerFactory.getLogger(BasicSMTPServer.class);
+
     static int defaultListenPort = 25000;
 
     public static void main(String[] args) {
         new BasicSMTPServer().start(defaultListenPort);
-        System.out.println("Server running!");
+        log.info("Server running!");
     }
 
     void start(int listenPort) {
         BasicMessageHandlerFactory myFactory = new BasicMessageHandlerFactory();
         SMTPServer smtpServer = new SMTPServer(myFactory);
         smtpServer.setPort(listenPort);
-        System.out.println("Starting Basic SMTP Server on port " + listenPort + "...");
+        log.info("Starting Basic SMTP Server on port " + listenPort + "...");
         smtpServer.start();
     }
 
     public class BasicMessageHandlerFactory implements MessageHandlerFactory {
 
+        @Override
         public MessageHandler create(MessageContext ctx) {
             return new Handler(ctx);
         }
@@ -38,36 +43,40 @@ public class BasicSMTPServer {
                 this.ctx = ctx;
             }
 
+            @Override
             public void from(String from) throws RejectException {
-                System.out.println("FROM:" + from);
+                log.info("FROM:" + from);
             }
 
+            @Override
             public void recipient(String recipient) throws RejectException {
-                System.out.println("RECIPIENT:" + recipient);
+                log.info("RECIPIENT:" + recipient);
             }
 
+            @Override
             public void data(InputStream data) throws IOException {
-                System.out.println("MAIL DATA");
-                System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
-                System.out.println(this.convertStreamToString(data));
-                System.out.println("= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
+                log.info("MAIL DATA");
+                log.info("= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
+                log.info(this.convertStreamToString(data));
+                log.info("= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
             }
 
+            @Override
             public void done() {
-                System.out.println("Finished");
+                log.info("Finished");
             }
 
             public String convertStreamToString(InputStream is) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 StringBuilder sb = new StringBuilder();
 
-                String line = null;
+                String line;
                 try {
                     while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error converting stream to text: {}", e.getMessage(), e);
                 }
                 return sb.toString();
             }

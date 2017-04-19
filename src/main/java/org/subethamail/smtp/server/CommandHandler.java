@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.DropConnectionException;
@@ -27,7 +26,7 @@ public class CommandHandler {
      * The map of known SMTP commands. Keys are upper case names of the
      * commands.
      */
-    private Map<String, Command> commandMap = new HashMap<String, Command>();
+    private Map<String, Command> commandMap = new HashMap<>();
 
     /**
      *
