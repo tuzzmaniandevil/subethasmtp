@@ -50,6 +50,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @param name
      */
     public MessageContentTest(String name) {
         super(name);
@@ -57,6 +58,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
@@ -75,6 +77,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void tearDown() throws Exception {
@@ -88,6 +91,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testReceivedHeader() throws Exception {
         MimeMessage message = new MimeMessage(this.session);
@@ -107,6 +111,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testMultipleRecipients() throws Exception {
         MimeMessage message = new MimeMessage(this.session);
@@ -123,6 +128,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testLargeMessage() throws Exception {
         MimeMessage message = new MimeMessage(this.session);
@@ -142,6 +148,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testUtf8EightBitMessage() throws Exception {
         // Beware editor/compiler character encoding issues; safest to put unicode escapes here
@@ -154,6 +161,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testIso88591EightBitMessage() throws Exception {
         // Beware editor/compiler character encoding issues; safest to put unicode escapes here
@@ -166,6 +174,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testIso885915EightBitMessage() throws Exception {
         // Beware editor/compiler character encoding issues; safest to put unicode escapes here
@@ -197,6 +206,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testIso2022JPEightBitMessage() throws Exception {
         String body = "\u3042\u3044\u3046\u3048\u304a\r\n"; // some Japanese letters
@@ -207,6 +217,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testBinaryEightBitMessage() throws Exception {
         byte[] body = new byte[64];
@@ -235,6 +246,7 @@ public class MessageContentTest extends TestCase {
 
     /**
      *
+     * @return
      */
     public static Test suite() {
         return new TestSuite(MessageContentTest.class);

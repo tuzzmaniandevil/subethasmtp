@@ -22,14 +22,16 @@ abstract public class BaseCommand implements Command {
     /**
      * Name of the command, ie HELO
      */
-    private String name;
+    private final String name;
     /**
      * The help message for this command
      */
-    private HelpMessage helpMsg;
+    private final HelpMessage helpMsg;
 
     /**
      *
+     * @param name
+     * @param help
      */
     protected BaseCommand(String name, String help) {
         this.name = name;
@@ -38,6 +40,9 @@ abstract public class BaseCommand implements Command {
 
     /**
      *
+     * @param name
+     * @param help
+     * @param argumentDescription
      */
     protected BaseCommand(String name, String help, String argumentDescription) {
         this.name = name;
@@ -47,26 +52,38 @@ abstract public class BaseCommand implements Command {
     /**
      * This is the main method that you need to override in order to implement a
      * command.
+     *
+     * @param commandString
+     * @param context
+     * @throws java.io.IOException
+     * @throws org.subethamail.smtp.DropConnectionException
      */
+    @Override
     abstract public void execute(String commandString, Session context)
             throws IOException, DropConnectionException;
 
     /**
      *
+     * @return
      */
+    @Override
     public HelpMessage getHelp() {
         return this.helpMsg;
     }
 
     /**
      *
+     * @return
      */
+    @Override
     public String getName() {
         return this.name;
     }
 
     /**
      *
+     * @param commandString
+     * @return
      */
     protected String getArgPredicate(String commandString) {
         if (commandString == null || commandString.length() < 4) {
@@ -78,9 +95,11 @@ abstract public class BaseCommand implements Command {
 
     /**
      *
+     * @param commandString
+     * @return
      */
     protected String[] getArgs(String commandString) {
-        List<String> strings = new ArrayList<String>();
+        List<String> strings = new ArrayList<>();
         StringTokenizer stringTokenizer = new StringTokenizer(commandString);
         while (stringTokenizer.hasMoreTokens()) {
             strings.add(stringTokenizer.nextToken());

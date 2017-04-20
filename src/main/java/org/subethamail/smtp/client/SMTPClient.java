@@ -127,6 +127,8 @@ public class SMTPClient {
     /**
      * Establishes a connection to host and port.
      *
+     * @param host
+     * @param port
      * @throws UnknownHostException if the hostname cannot be resolved
      * @throws IOException if there is a problem connecting to the port
      */
@@ -138,6 +140,8 @@ public class SMTPClient {
      * Establishes a connection to host and port from the specified local socket
      * address.
      *
+     * @param host
+     * @param port
      * @param bindpoint the local socket address. If null, the system will pick
      * up an ephemeral port and a valid local address.
      * @throws UnknownHostException if the hostname cannot be resolved
@@ -151,6 +155,8 @@ public class SMTPClient {
     /**
      * Establishes a connection to host and port.
      *
+     * @param host
+     * @param port
      * @throws IOException if there is a problem connecting to the port
      */
     public void connect(String host, int port) throws IOException {
@@ -195,6 +201,8 @@ public class SMTPClient {
      * constructors which open the connection immediately. In these cases the
      * subclass is not yet initialized, therefore subclasses overriding this
      * function shouldn't use those constructors.
+     *
+     * @return
      */
     protected Socket createSocket() {
         return new Socket();
@@ -202,6 +210,8 @@ public class SMTPClient {
 
     /**
      * Returns true if the client is connected to the server.
+     *
+     * @return
      */
     public boolean isConnected() {
         return connected;
@@ -212,6 +222,7 @@ public class SMTPClient {
      * be appended to the message.
      *
      * @param msg should not have any newlines
+     * @throws java.io.IOException
      */
     protected void send(String msg) throws IOException {
         if (log.isDebugEnabled()) {
@@ -228,6 +239,9 @@ public class SMTPClient {
 
     /**
      * Note that the response text comes back without trailing newlines.
+     *
+     * @return
+     * @throws java.io.IOException
      */
     protected Response receive() throws IOException {
         if (!connected) {
@@ -281,6 +295,7 @@ public class SMTPClient {
      *
      * @param msg should not have any newlines
      * @return the response from the server
+     * @throws java.io.IOException
      */
     public Response sendReceive(String msg) throws IOException {
         this.send(msg);
@@ -289,6 +304,10 @@ public class SMTPClient {
 
     /**
      * If response is not success, throw an exception
+     *
+     * @return
+     * @throws java.io.IOException
+     * @throws org.subethamail.smtp.client.SMTPException
      */
     public Response receiveAndCheck() throws IOException, SMTPException {
         Response resp = this.receive();
@@ -300,6 +319,11 @@ public class SMTPClient {
 
     /**
      * If response is not success, throw an exception
+     *
+     * @param msg
+     * @return
+     * @throws java.io.IOException
+     * @throws org.subethamail.smtp.client.SMTPException
      */
     public Response sendAndCheck(String msg) throws IOException, SMTPException {
         this.send(msg);
@@ -325,9 +349,6 @@ public class SMTPClient {
         }
     }
 
-    /**
-     *
-     */
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " { " + this.hostPort + "}";
@@ -336,6 +357,8 @@ public class SMTPClient {
     /**
      * Sets the local socket address. If null, the system will pick up an
      * ephemeral port and a valid local address. Default is null.
+     *
+     * @param bindpoint
      */
     public void setBindpoint(SocketAddress bindpoint) {
         this.bindpoint = bindpoint;
@@ -343,6 +366,8 @@ public class SMTPClient {
 
     /**
      * Returns the local socket address.
+     *
+     * @return
      */
     public SocketAddress getBindpoint() {
         return bindpoint;
@@ -352,6 +377,8 @@ public class SMTPClient {
      * Sets the name of the remote MTA for informative purposes. Default is
      * host:port, where host and port are the values which were used to open the
      * TCP connection to the server, as they were passed to the connect method.
+     *
+     * @param hostPort
      */
     public void setHostPort(String hostPort) {
         this.hostPort = hostPort;

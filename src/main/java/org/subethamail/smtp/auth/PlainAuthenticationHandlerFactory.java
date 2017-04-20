@@ -19,16 +19,17 @@ import org.subethamail.smtp.util.Base64;
  */
 public class PlainAuthenticationHandlerFactory implements AuthenticationHandlerFactory {
 
-    static List<String> MECHANISMS = new ArrayList<String>(1);
+    private static final List<String> MECHANISMS = new ArrayList<String>(1);
 
     static {
         MECHANISMS.add("PLAIN");
     }
 
-    private UsernamePasswordValidator helper;
+    private final UsernamePasswordValidator helper;
 
     /**
      *
+     * @param helper
      */
     public PlainAuthenticationHandlerFactory(UsernamePasswordValidator helper) {
         this.helper = helper;
@@ -37,6 +38,7 @@ public class PlainAuthenticationHandlerFactory implements AuthenticationHandlerF
     /**
      *
      */
+    @Override
     public List<String> getAuthenticationMechanisms() {
         return MECHANISMS;
     }
@@ -44,6 +46,7 @@ public class PlainAuthenticationHandlerFactory implements AuthenticationHandlerF
     /**
      *
      */
+    @Override
     public AuthenticationHandler create() {
         return new Handler();
     }
@@ -55,7 +58,7 @@ public class PlainAuthenticationHandlerFactory implements AuthenticationHandlerF
         private String username;
         private String password;
 
-        /* */
+        @Override
         public String auth(String clientInput) throws RejectException {
             StringTokenizer stk = new StringTokenizer(clientInput);
             String secret = stk.nextToken();
@@ -115,7 +118,7 @@ public class PlainAuthenticationHandlerFactory implements AuthenticationHandlerF
             this.username = authenticationId;
             this.password = passwd;
             try {
-                PlainAuthenticationHandlerFactory.this.helper.login(this.username.toString(), this.password);
+                PlainAuthenticationHandlerFactory.this.helper.login(this.username, this.password);
             } catch (LoginFailedException lfe) {
                 throw new RejectException(535, /*5.7.8*/
                         "Authentication credentials invalid");
@@ -124,7 +127,7 @@ public class PlainAuthenticationHandlerFactory implements AuthenticationHandlerF
             return null;
         }
 
-        /* */
+        @Override
         public Object getIdentity() {
             return this.username;
         }

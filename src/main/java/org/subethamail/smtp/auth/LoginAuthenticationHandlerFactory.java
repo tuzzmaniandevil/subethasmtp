@@ -31,16 +31,17 @@ import org.subethamail.smtp.util.TextUtils;
  */
 public class LoginAuthenticationHandlerFactory implements AuthenticationHandlerFactory {
 
-    static List<String> MECHANISMS = new ArrayList<String>(1);
+    private static final List<String> MECHANISMS = new ArrayList<String>(1);
 
     static {
         MECHANISMS.add("LOGIN");
     }
 
-    private UsernamePasswordValidator helper;
+    private final UsernamePasswordValidator helper;
 
     /**
      *
+     * @param helper
      */
     public LoginAuthenticationHandlerFactory(UsernamePasswordValidator helper) {
         this.helper = helper;
@@ -49,6 +50,7 @@ public class LoginAuthenticationHandlerFactory implements AuthenticationHandlerF
     /**
      *
      */
+    @Override
     public List<String> getAuthenticationMechanisms() {
         return MECHANISMS;
     }
@@ -56,6 +58,7 @@ public class LoginAuthenticationHandlerFactory implements AuthenticationHandlerF
     /**
      *
      */
+    @Override
     public AuthenticationHandler create() {
         return new Handler();
     }
@@ -131,7 +134,7 @@ public class LoginAuthenticationHandlerFactory implements AuthenticationHandlerF
             return null;
         }
 
-        /* */
+        @Override
         public Object getIdentity() {
             return this.username;
         }

@@ -56,6 +56,7 @@ public enum CommandRegistry {
 
     /**
      *
+     * @return
      */
     public Command getCommand() {
         return this.command;

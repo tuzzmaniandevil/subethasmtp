@@ -27,6 +27,9 @@ public class MailCommand extends BaseCommand {
 
     /**
      *
+     * @param sess
+     * @throws java.io.IOException
+     * @throws org.subethamail.smtp.DropConnectionException
      */
     /* (non-Javadoc)
 	 * @see org.subethamail.smtp.server.BaseCommand#execute(java.lang.String, org.subethamail.smtp.server.Session)

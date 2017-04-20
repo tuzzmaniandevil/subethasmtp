@@ -27,6 +27,7 @@ public class HelpCommand extends BaseCommand {
 
     /**
      *
+     * @throws java.io.IOException
      */
     @Override
     public void execute(String commandString, Session context) throws IOException {
@@ -59,11 +60,13 @@ public class HelpCommand extends BaseCommand {
 
     /**
      *
+     * @param server
+     * @return
      */
     protected String getFormattedTopicList(SMTPServer server) {
         StringBuilder sb = new StringBuilder();
         for (String key : server.getCommandHandler().getVerbs()) {
-            sb.append("214-     " + key + "\r\n");
+            sb.append("214-     ").append(key).append("\r\n");
         }
         return sb.toString();
     }

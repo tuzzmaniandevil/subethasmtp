@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.*;
 import org.subethamail.smtp.server.SMTPServer;
 
+/**
+ * An example of a basic SMTP Server
+ *
+ * @author dylan
+ */
 public class BasicSMTPServer {
 
     private final static Logger log = LoggerFactory.getLogger(BasicSMTPServer.class);

@@ -18,6 +18,9 @@ public class HelpMessage {
 
     /**
      *
+     * @param commandName
+     * @param helpMessage
+     * @param argumentDescription
      */
     public HelpMessage(String commandName, String helpMessage, String argumentDescription) {
         this.commandName = commandName;
@@ -28,6 +31,8 @@ public class HelpMessage {
 
     /**
      *
+     * @param commandName
+     * @param helpMessage
      */
     public HelpMessage(String commandName, String helpMessage) {
         this(commandName, helpMessage, null);
@@ -35,6 +40,7 @@ public class HelpMessage {
 
     /**
      *
+     * @return
      */
     public String getName() {
         return this.commandName;
@@ -42,6 +48,7 @@ public class HelpMessage {
 
     /**
      *
+     * @return
      */
     public String toOutputString() {
         return this.outputString;
@@ -63,6 +70,8 @@ public class HelpMessage {
 
     /**
      *
+     * @param o
+     * @return
      */
     @Override
     public boolean equals(Object o) {
@@ -81,15 +90,13 @@ public class HelpMessage {
                 : that.commandName != null) {
             return false;
         }
-        if (this.helpMessage != null ? !this.helpMessage.equals(that.helpMessage)
-                : that.helpMessage != null) {
-            return false;
-        }
-        return true;
+        return !(this.helpMessage != null ? !this.helpMessage.equals(that.helpMessage)
+                : that.helpMessage != null);
     }
 
     /**
      *
+     * @return
      */
     @Override
     public int hashCode() {

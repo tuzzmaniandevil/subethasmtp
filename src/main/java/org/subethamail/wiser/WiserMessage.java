@@ -28,6 +28,7 @@ public class WiserMessage {
     /**
      * Generate a JavaMail MimeMessage.
      *
+     * @return
      * @throws MessagingException
      */
     public MimeMessage getMimeMessage() throws MessagingException {
@@ -36,6 +37,8 @@ public class WiserMessage {
 
     /**
      * Get's the raw message DATA.
+     *
+     * @return
      */
     public byte[] getData() {
         return this.messageData;
@@ -43,6 +46,8 @@ public class WiserMessage {
 
     /**
      * Get's the RCPT TO:
+     *
+     * @return
      */
     public String getEnvelopeReceiver() {
         return this.envelopeReceiver;
@@ -50,6 +55,8 @@ public class WiserMessage {
 
     /**
      * Get's the MAIL FROM:
+     *
+     * @return
      */
     public String getEnvelopeSender() {
         return this.envelopeSender;
@@ -57,6 +64,9 @@ public class WiserMessage {
 
     /**
      * Dumps the rough contents of the message for debugging purposes
+     *
+     * @param out
+     * @throws javax.mail.MessagingException
      */
     public void dumpMessage(PrintStream out) throws MessagingException {
         out.println("===== Dumping message =====");

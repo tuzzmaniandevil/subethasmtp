@@ -34,6 +34,9 @@ public class AuthCommand extends BaseCommand {
 
     /**
      *
+     * @param commandString
+     * @param sess
+     * @throws java.io.IOException
      */
     @Override
     public void execute(String commandString, Session sess)

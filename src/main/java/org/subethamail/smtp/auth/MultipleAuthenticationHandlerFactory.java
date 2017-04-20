@@ -23,13 +23,13 @@ public class MultipleAuthenticationHandlerFactory implements AuthenticationHandl
      * Maps the auth type (eg "PLAIN") to a handler. The mechanism name (key) is
      * in upper case.
      */
-    Map<String, AuthenticationHandlerFactory> plugins = new HashMap<String, AuthenticationHandlerFactory>();
+    Map<String, AuthenticationHandlerFactory> plugins = new HashMap<>();
 
     /**
      * A more orderly list of the supported mechanisms. Mechanism names are in
      * upper case.
      */
-    List<String> mechanisms = new ArrayList<String>();
+    List<String> mechanisms = new ArrayList<>();
 
     /**
      *
@@ -40,17 +40,19 @@ public class MultipleAuthenticationHandlerFactory implements AuthenticationHandl
 
     /**
      *
+     * @param factories
      */
     public MultipleAuthenticationHandlerFactory(Collection<AuthenticationHandlerFactory> factories) {
         for (AuthenticationHandlerFactory fact : factories) {
-            this.addFactory(fact);
+            addFactory(fact);
         }
     }
 
     /**
      *
+     * @param fact
      */
-    public void addFactory(AuthenticationHandlerFactory fact) {
+    public final void addFactory(AuthenticationHandlerFactory fact) {
         List<String> partialMechanisms = fact.getAuthenticationMechanisms();
         for (String mechanism : partialMechanisms) {
             if (!this.mechanisms.contains(mechanism)) {
@@ -63,6 +65,7 @@ public class MultipleAuthenticationHandlerFactory implements AuthenticationHandl
     /**
      *
      */
+    @Override
     public List<String> getAuthenticationMechanisms() {
         return this.mechanisms;
     }
@@ -70,6 +73,7 @@ public class MultipleAuthenticationHandlerFactory implements AuthenticationHandl
     /**
      *
      */
+    @Override
     public AuthenticationHandler create() {
         return new Handler();
     }
@@ -80,7 +84,7 @@ public class MultipleAuthenticationHandlerFactory implements AuthenticationHandl
 
         AuthenticationHandler active;
 
-        /* */
+        @Override
         public String auth(String clientInput) throws RejectException {
             if (this.active == null) {
                 StringTokenizer stk = new StringTokenizer(clientInput);
@@ -103,7 +107,7 @@ public class MultipleAuthenticationHandlerFactory implements AuthenticationHandl
             return this.active.auth(clientInput);
         }
 
-        /* */
+        @Override
         public Object getIdentity() {
             return this.active.getIdentity();
         }

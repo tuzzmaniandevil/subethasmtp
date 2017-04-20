@@ -14,23 +14,33 @@ public class UnknownCommandException extends CommandException {
     }
 
     /**
+     * See
+     * {@link CommandException#CommandException(java.lang.String) CommandException}
      *
+     * @param message
      */
-    public UnknownCommandException(String string) {
-        super(string);
+    public UnknownCommandException(String message) {
+        super(message);
     }
 
     /**
+     * See
+     * {@link CommandException#CommandException(java.lang.String, java.lang.Throwable) CommandException}
      *
+     * @param message
+     * @param cause
      */
-    public UnknownCommandException(String string, Throwable throwable) {
-        super(string, throwable);
+    public UnknownCommandException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     /**
+     * See
+     * {@link CommandException#CommandException(java.lang.Throwable) CommandException}
      *
+     * @param cause
      */
-    public UnknownCommandException(Throwable throwable) {
-        super(throwable);
+    public UnknownCommandException(Throwable cause) {
+        super(cause);
     }
 }

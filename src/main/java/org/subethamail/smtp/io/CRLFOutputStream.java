@@ -96,6 +96,10 @@ public class CRLFOutputStream extends FilterOutputStream {
      * Provides an extension point for ExtraDotOutputStream to be able to add
      * dots at the beginning of new lines.
      *
+     * @param buffer
+     * @param offset
+     * @param length
+     * @throws java.io.IOException
      * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     protected void writeChunk(byte buffer[], int offset, int length) throws IOException {
@@ -103,6 +107,10 @@ public class CRLFOutputStream extends FilterOutputStream {
     }
 
     /**
+     * @param buffer
+     * @param offset
+     * @param length
+     * @throws java.io.IOException
      * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     @Override

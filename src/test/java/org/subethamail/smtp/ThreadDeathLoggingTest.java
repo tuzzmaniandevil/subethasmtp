@@ -20,6 +20,8 @@ public class ThreadDeathLoggingTest {
      * NPE. Note that any exception that causes a thread death is printed on
      * stderr by the default uncaughtExceptionHandler of the JRE, but this is
      * not what you are looking for.
+     *
+     * @throws org.subethamail.smtp.client.SMTPException
      */
     @Ignore("Requires manual setup and verification")
     @Test()
@@ -31,7 +33,6 @@ public class ThreadDeathLoggingTest {
             @Override
             public void deliver(String from, String recipient, InputStream data) throws TooMuchDataException,
                     IOException {
-                return;
             }
 
             @Override

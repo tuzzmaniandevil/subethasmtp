@@ -43,6 +43,8 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
      * Initializes this factory with a single listener.
      *
      * Default data deferred size is 5 megs.
+     *
+     * @param listener
      */
     public SmarterMessageListenerAdapter(SmarterMessageListener listener) {
         this(Collections.singleton(listener), DEFAULT_DATA_DEFERRED_SIZE);
@@ -52,6 +54,8 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
      * Initializes this factory with the listeners.
      *
      * Default data deferred size is 5 megs.
+     *
+     * @param listeners
      */
     public SmarterMessageListenerAdapter(Collection<SmarterMessageListener> listeners) {
         this(listeners, DEFAULT_DATA_DEFERRED_SIZE);
@@ -60,6 +64,7 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
     /**
      * Initializes this factory with the listeners.
      *
+     * @param listeners
      * @param dataDeferredSize The server will buffer incoming messages to disk
      * when they hit this limit in the DATA received.
      */
@@ -71,6 +76,7 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
     /* (non-Javadoc)
 	 * @see org.subethamail.smtp.MessageHandlerFactory#create(org.subethamail.smtp.MessageContext)
      */
+    @Override
     public MessageHandler create(MessageContext ctx) {
         return new Handler(ctx);
     }
@@ -82,7 +88,7 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
 
         MessageContext ctx;
         String from;
-        List<Receiver> deliveries = new ArrayList<Receiver>();
+        List<Receiver> deliveries = new ArrayList<>();
 
         /**
          *
@@ -94,6 +100,7 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void from(String from) throws RejectException {
             this.from = from;
         }
@@ -101,6 +108,7 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void recipient(String recipient) throws RejectException {
             for (SmarterMessageListener listener : SmarterMessageListenerAdapter.this.listeners) {
                 Receiver rec = listener.accept(this.from, recipient);
@@ -118,13 +126,12 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void data(InputStream data) throws TooMuchDataException, IOException {
             if (this.deliveries.size() == 1) {
                 this.deliveries.get(0).deliver(data);
             } else {
-                DeferredFileOutputStream dfos = new DeferredFileOutputStream(SmarterMessageListenerAdapter.this.dataDeferredSize);
-
-                try {
+                try (DeferredFileOutputStream dfos = new DeferredFileOutputStream(SmarterMessageListenerAdapter.this.dataDeferredSize)) {
                     int value;
                     while ((value = data.read()) >= 0) {
                         dfos.write(value);
@@ -133,8 +140,6 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
                     for (Receiver rec : this.deliveries) {
                         rec.deliver(dfos.getInputStream());
                     }
-                } finally {
-                    dfos.close();
                 }
             }
         }
@@ -142,6 +147,7 @@ public class SmarterMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void done() {
             for (Receiver rec : this.deliveries) {
                 rec.done();

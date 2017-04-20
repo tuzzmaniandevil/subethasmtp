@@ -16,7 +16,7 @@ public interface AuthenticationHandler {
 
     /**
      * Initially called using an input string in the RFC2554 form: "AUTH
-     * <mechanism> [initial-response]". <br>
+     * &lt;mechanism&gt; [initial-response]". <br>
      * This method must return text which will be delivered to the client, or
      * null if the exchange has been completed successfully. If a response is
      * provided to the client, this continues the exchange - there will be
@@ -50,6 +50,8 @@ public interface AuthenticationHandler {
      * authentication mechanism used, but typically this returns a String
      * username. If authentication was not successful, the return value is
      * undefined.
+     *
+     * @return
      */
     public Object getIdentity();
 }

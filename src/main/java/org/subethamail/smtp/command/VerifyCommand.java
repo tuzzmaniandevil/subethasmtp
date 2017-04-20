@@ -19,6 +19,8 @@ public class VerifyCommand extends BaseCommand {
 
     /**
      *
+     * @param sess
+     * @throws java.io.IOException
      */
     @Override
     public void execute(String commandString, Session sess) throws IOException {

@@ -38,6 +38,7 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @param name
      */
     public WiserFailuresTest(String name) {
         super(name);
@@ -45,6 +46,7 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
@@ -59,6 +61,7 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void tearDown() throws Exception {
@@ -66,25 +69,28 @@ public class WiserFailuresTest extends TestCase {
         try {
             this.input.close();
         } catch (Exception e) {
-        };
+        }
         try {
             this.output.close();
         } catch (Exception e) {
-        };
+        }
         try {
             this.socket.close();
         } catch (Exception e) {
-        };
+        }
         try {
             this.server.stop();
         } catch (Exception e) {
-        };
+        }
     }
 
     /**
      * See
      * http://sourceforge.net/tracker/index.php?func=detail&aid=1474700&group_id=78413&atid=553186
      * for discussion about this bug
+     *
+     * @throws java.io.IOException
+     * @throws javax.mail.MessagingException
      */
     public void testMailFromAfterReset() throws IOException, MessagingException {
         log.info("testMailFromAfterReset() start");
@@ -112,6 +118,9 @@ public class WiserFailuresTest extends TestCase {
      * See
      * http://sourceforge.net/tracker/index.php?func=detail&aid=1474700&group_id=78413&atid=553186
      * for discussion about this bug
+     *
+     * @throws java.io.IOException
+     * @throws javax.mail.MessagingException
      */
     public void testMailFromWithInitialReset() throws IOException, MessagingException {
         this.assertConnect();
@@ -132,6 +141,8 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @throws java.io.IOException
+     * @throws javax.mail.MessagingException
      */
     public void testSendEncodedMessage() throws IOException, MessagingException {
         String body = "\u3042\u3044\u3046\u3048\u304a"; // some Japanese letters
@@ -141,7 +152,7 @@ public class WiserFailuresTest extends TestCase {
             this.sendMessageWithCharset(SMTP_PORT, "sender@hereagain.com",
                     "EncodedMessage", body, "receivingagain@there.com", charset);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("testSendEncodedMessage: {}", e.getMessage(), e);
             fail("Unexpected exception: " + e);
         }
 
@@ -153,13 +164,15 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @throws java.io.IOException
+     * @throws javax.mail.MessagingException
      */
     public void testSendMessageWithCarriageReturn() throws IOException, MessagingException {
         String bodyWithCR = "\r\n\r\nKeep these\r\npesky\r\n\r\ncarriage returns\r\n";
         try {
             this.sendMessage(SMTP_PORT, "sender@hereagain.com", "CRTest", bodyWithCR, "receivingagain@there.com");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("testSendMessageWithCarriageReturn: {}", e.getMessage(), e);
             fail("Unexpected exception: " + e);
         }
 
@@ -171,9 +184,9 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @throws java.io.IOException
      */
-    public void testSendTwoMessagesSameConnection()
-            throws IOException {
+    public void testSendTwoMessagesSameConnection() throws IOException {
         try {
             MimeMessage[] mimeMessages = new MimeMessage[2];
             Properties mailProps = this.getMailProperties(SMTP_PORT);
@@ -192,7 +205,7 @@ public class WiserFailuresTest extends TestCase {
 
             transport.close();
         } catch (MessagingException e) {
-            e.printStackTrace();
+            log.error("testSendTwoMessagesSameConnection: {}", e.getMessage(), e);
             fail("Unexpected exception: " + e);
         }
 
@@ -201,6 +214,8 @@ public class WiserFailuresTest extends TestCase {
 
     /**
      *
+     * @throws javax.mail.MessagingException
+     * @throws java.io.IOException
      */
     public void testSendTwoMsgsWithLogin() throws MessagingException, IOException {
         try {
@@ -230,16 +245,16 @@ public class WiserFailuresTest extends TestCase {
                 transport.sendMessage(msg, InternetAddress.parse("dimiter.bakardjiev@musala.com", false));
                 assertEquals(2, this.server.getMessages().size());
             } catch (javax.mail.MessagingException me) {
-                me.printStackTrace();
+                log.error("testSendTwoMsgsWithLogin 1: {}", me.getMessage(), me);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("testSendTwoMsgsWithLogin 2: {}", e.getMessage(), e);
             } finally {
                 if (transport != null) {
                     transport.close();
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("testSendTwoMsgsWithLogin 3: {}", e.getMessage(), e);
         }
 
         Iterator<WiserMessage> emailIter = this.server.getMessages().iterator();
@@ -403,14 +418,14 @@ public class WiserFailuresTest extends TestCase {
      *
      */
     private String readInput() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         try {
             do {
                 sb.append(this.input.readLine()).append("\n");
             } while (this.input.ready());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("readInput: {}", e.getMessage(), e);
         }
 
         return sb.toString();

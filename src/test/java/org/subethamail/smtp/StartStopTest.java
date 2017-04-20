@@ -37,6 +37,7 @@ public class StartStopTest extends TestCase {
 
     /**
      *
+     * @param name
      */
     public StartStopTest(String name) {
         super(name);
@@ -44,6 +45,7 @@ public class StartStopTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
@@ -57,6 +59,7 @@ public class StartStopTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void tearDown() throws Exception {
@@ -65,6 +68,7 @@ public class StartStopTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testMultipleStartStop() throws Exception {
         for (int i = 0; i < 10; i++) {
@@ -93,6 +97,7 @@ public class StartStopTest extends TestCase {
 
     /**
      *
+     * @return
      */
     public static Test suite() {
         return new TestSuite(StartStopTest.class);

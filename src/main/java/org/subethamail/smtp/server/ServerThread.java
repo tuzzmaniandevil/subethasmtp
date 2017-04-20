@@ -50,7 +50,7 @@ class ServerThread extends Thread {
         // messages
         int countOfConnectionPermits = server.getMaxConnections() + 10;
         this.connectionPermits = new Semaphore(countOfConnectionPermits);
-        this.sessionThreads = new HashSet<Session>(countOfConnectionPermits * 4 / 3 + 1);
+        this.sessionThreads = new HashSet<>(countOfConnectionPermits * 4 / 3 + 1);
     }
 
     /**
@@ -89,7 +89,7 @@ class ServerThread extends Thread {
                 continue; // exit or retry
             }
 
-            Socket socket = null;
+            Socket socket;
             try {
                 socket = this.serverSocket.accept();
             } catch (IOException e) {
@@ -107,7 +107,7 @@ class ServerThread extends Thread {
                 continue;
             }
 
-            Session session = null;
+            Session session;
             try {
                 session = new Session(server, this, socket);
             } catch (IOException e) {
@@ -140,7 +140,6 @@ class ServerThread extends Thread {
                 } catch (IOException e1) {
                     log.debug("Cannot close socket after exception", e1);
                 }
-                continue;
             }
         }
     }
@@ -186,7 +185,7 @@ class ServerThread extends Thread {
         // which locks this instance.
         List<Session> sessionsToBeClosed;
         synchronized (this) {
-            sessionsToBeClosed = new ArrayList<Session>(sessionThreads);
+            sessionsToBeClosed = new ArrayList<>(sessionThreads);
         }
         for (Session sessionThread : sessionsToBeClosed) {
             sessionThread.quit();

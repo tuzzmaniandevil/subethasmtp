@@ -26,6 +26,9 @@ public class ReceiptCommand extends BaseCommand {
 
     /**
      *
+     * @param sess
+     * @throws java.io.IOException
+     * @throws org.subethamail.smtp.DropConnectionException
      */
     @Override
     public void execute(String commandString, Session sess)
@@ -44,7 +47,6 @@ public class ReceiptCommand extends BaseCommand {
             sess.sendResponse(
                     "501 Syntax: RCPT TO: <address>  Error in parameters: \""
                     + args + "\"");
-            return;
         } else {
             String recipientAddress = EmailUtils.extractEmailAddress(args, 3);
             try {

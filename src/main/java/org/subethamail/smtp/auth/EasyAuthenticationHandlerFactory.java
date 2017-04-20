@@ -17,16 +17,18 @@ public class EasyAuthenticationHandlerFactory extends MultipleAuthenticationHand
 
     /**
      *
+     * @param validator
      */
     public EasyAuthenticationHandlerFactory(UsernamePasswordValidator validator) {
         this.validator = validator;
 
-        this.addFactory(new PlainAuthenticationHandlerFactory(this.validator));
-        this.addFactory(new LoginAuthenticationHandlerFactory(this.validator));
+        addFactory(new PlainAuthenticationHandlerFactory(this.validator));
+        addFactory(new LoginAuthenticationHandlerFactory(this.validator));
     }
 
     /**
      *
+     * @return
      */
     public UsernamePasswordValidator getValidator() {
         return this.validator;

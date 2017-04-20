@@ -52,8 +52,6 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
      */
     boolean closed;
 
-    boolean thresholdReached = false;
-
     /**
      * @param transitionSize is the number of bytes at which to convert from a
      * byte array to a real file.
@@ -83,6 +81,7 @@ public class DeferredFileOutputStream extends ThresholdingOutputStream {
      *
      * @return either a BetterByteArrayOutputStream or buffered FileInputStream,
      * depending on what state we are in.
+     * @throws java.io.IOException
      */
     public InputStream getInputStream() throws IOException {
         if (this.output instanceof BetterByteArrayOutputStream) {

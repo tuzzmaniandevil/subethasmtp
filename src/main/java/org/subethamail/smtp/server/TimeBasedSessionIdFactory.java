@@ -15,6 +15,9 @@ public class TimeBasedSessionIdFactory implements SessionIdFactory {
     @GuardedBy("this")
     private long lastAllocatedId = 0;
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public String create() {
         long id = System.currentTimeMillis();

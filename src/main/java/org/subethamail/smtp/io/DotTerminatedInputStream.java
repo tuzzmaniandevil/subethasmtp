@@ -13,7 +13,7 @@ public class DotTerminatedInputStream extends InputStream {
     /**
      * The wrapped input stream.
      */
-    private InputStream in;
+    private final InputStream in;
 
     /**
      * The last bytes returned by the {@link #read()} function. The first byte

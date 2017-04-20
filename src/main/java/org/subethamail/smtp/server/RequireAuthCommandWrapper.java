@@ -11,7 +11,7 @@ import org.subethamail.smtp.DropConnectionException;
  */
 public class RequireAuthCommandWrapper implements Command {
 
-    private Command wrapped;
+    private final Command wrapped;
 
     /**
      * @param wrapped the wrapped command (not null)
@@ -23,6 +23,7 @@ public class RequireAuthCommandWrapper implements Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute(String commandString, Session sess)
             throws IOException, DropConnectionException {
         if (!sess.getServer().getRequireAuth() || sess.isAuthenticated()) {

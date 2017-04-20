@@ -38,6 +38,8 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
      * Initializes this factory with a single listener.
      *
      * Default data deferred size is 5 megs.
+     *
+     * @param listener
      */
     public SimpleMessageListenerAdapter(SimpleMessageListener listener) {
         this(Collections.singleton(listener), DEFAULT_DATA_DEFERRED_SIZE);
@@ -47,6 +49,8 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
      * Initializes this factory with the listeners.
      *
      * Default data deferred size is 5 megs.
+     *
+     * @param listeners
      */
     public SimpleMessageListenerAdapter(Collection<SimpleMessageListener> listeners) {
         this(listeners, DEFAULT_DATA_DEFERRED_SIZE);
@@ -55,6 +59,7 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
     /**
      * Initializes this factory with the listeners.
      *
+     * @param listeners
      * @param dataDeferredSize The server will buffer incoming messages to disk
      * when they hit this limit in the DATA received.
      */
@@ -66,6 +71,7 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
     /* (non-Javadoc)
 	 * @see org.subethamail.smtp.MessageHandlerFactory#create(org.subethamail.smtp.MessageContext)
      */
+    @Override
     public MessageHandler create(MessageContext ctx) {
         return new Handler(ctx);
     }
@@ -100,7 +106,7 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
 
         MessageContext ctx;
         String from;
-        List<Delivery> deliveries = new ArrayList<Delivery>();
+        List<Delivery> deliveries = new ArrayList<>();
 
         /**
          *
@@ -112,6 +118,7 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void from(String from) throws RejectException {
             this.from = from;
         }
@@ -119,6 +126,7 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void recipient(String recipient) throws RejectException {
             boolean addedListener = false;
 
@@ -137,14 +145,13 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
         /**
          *
          */
+        @Override
         public void data(InputStream data) throws TooMuchDataException, IOException {
             if (this.deliveries.size() == 1) {
                 Delivery delivery = this.deliveries.get(0);
                 delivery.getListener().deliver(this.from, delivery.getRecipient(), data);
             } else {
-                DeferredFileOutputStream dfos = new DeferredFileOutputStream(SimpleMessageListenerAdapter.this.dataDeferredSize);
-
-                try {
+                try (DeferredFileOutputStream dfos = new DeferredFileOutputStream(SimpleMessageListenerAdapter.this.dataDeferredSize)) {
                     int value;
                     while ((value = data.read()) >= 0) {
                         dfos.write(value);
@@ -153,15 +160,11 @@ public class SimpleMessageListenerAdapter implements MessageHandlerFactory {
                     for (Delivery delivery : this.deliveries) {
                         delivery.getListener().deliver(this.from, delivery.getRecipient(), dfos.getInputStream());
                     }
-                } finally {
-                    dfos.close();
                 }
             }
         }
 
-        /**
-         *
-         */
+        @Override
         public void done() {
         }
     }

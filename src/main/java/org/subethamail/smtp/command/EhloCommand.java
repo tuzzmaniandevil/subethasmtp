@@ -24,6 +24,8 @@ public class EhloCommand extends BaseCommand {
 
     /**
      *
+     * @param sess
+     * @throws java.io.IOException
      */
     @Override
     public void execute(String commandString, Session sess) throws IOException {
@@ -36,12 +38,12 @@ public class EhloCommand extends BaseCommand {
         sess.resetMailTransaction();
         sess.setHelo(args[1]);
 
-//		postfix returns...
-//		250-server.host.name
-//		250-PIPELINING
-//		250-SIZE 10240000
-//		250-ETRN
-//		250 8BITMIME
+        //	postfix returns...
+        //		250-server.host.name
+        //		250-PIPELINING
+        //		250-SIZE 10240000
+        //              250-ETRN
+        //              250 8BITMIME
         // Once upon a time this code tracked whether or not HELO/EHLO has been seen
         // already and gave an error msg.  However, this is stupid and pointless.
         // Postfix doesn't care, so we won't either.  If you want more, read:

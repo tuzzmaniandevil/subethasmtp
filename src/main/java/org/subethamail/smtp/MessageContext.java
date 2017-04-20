@@ -42,7 +42,7 @@ public interface MessageContext {
      * Returns the identity of the peer which was established as part of the TLS
      * handshake as defined by
      * {@link javax.net.ssl.SSLSession#getPeerCertificates()}.
-     * <p/>
+     * <br><br>
      * In order to get this information, override
      * {@link SMTPServer#createSSLSocket(java.net.Socket)} and call
      * {@link javax.net.ssl.SSLSocket#setNeedClientAuth(boolean) setNeedClientAuth(true)}

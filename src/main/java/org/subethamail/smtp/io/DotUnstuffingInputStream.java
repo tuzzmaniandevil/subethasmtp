@@ -40,6 +40,7 @@ public class DotUnstuffingInputStream extends FilterInputStream {
      * Read through the stream, checking for '\r\n.'
      *
      * @return the byte read from the stream
+     * @throws java.io.IOException
      */
     @Override
     public int read() throws IOException {
@@ -61,6 +62,7 @@ public class DotUnstuffingInputStream extends FilterInputStream {
      * inserted
      * @param len the maximum number of bytes to be read off the stream
      * @return the number of bytes read
+     * @throws java.io.IOException
      */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
@@ -94,6 +96,8 @@ public class DotUnstuffingInputStream extends FilterInputStream {
 
     /**
      * Provide access to the base input stream.
+     *
+     * @return
      */
     public InputStream getBaseStream() {
         return this.in;

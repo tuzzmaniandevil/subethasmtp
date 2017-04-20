@@ -67,7 +67,7 @@ public class PlainAuthenticator implements Authenticator {
      */
     private Set<String> parseMechanismsList(String authParameters) {
         String[] mechanisms = authParameters.split(" ");
-        return new HashSet<String>(Arrays.asList(mechanisms));
+        return new HashSet<>(Arrays.asList(mechanisms));
     }
 
     /**

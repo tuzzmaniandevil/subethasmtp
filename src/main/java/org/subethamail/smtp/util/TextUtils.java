@@ -10,10 +10,12 @@ import java.util.Iterator;
 public class TextUtils {
 
     /**
+     * @param items
+     * @param delim
      * @return a delimited string containing the specified items
      */
     public static String joinTogether(Collection<String> items, String delim) {
-        StringBuffer ret = new StringBuffer();
+        StringBuilder ret = new StringBuilder();
 
         for (Iterator<String> it = items.iterator(); it.hasNext();) {
             ret.append(it.next());
@@ -26,6 +28,8 @@ public class TextUtils {
     }
 
     /**
+     * @param str
+     * @param charset
      * @return the value of str.getBytes() without the idiotic checked exception
      */
     public static byte[] getBytes(String str, String charset) {
@@ -37,6 +41,7 @@ public class TextUtils {
     }
 
     /**
+     * @param str
      * @return the string as US-ASCII bytes
      */
     public static byte[] getAsciiBytes(String str) {
@@ -44,6 +49,7 @@ public class TextUtils {
     }
 
     /**
+     * @param str
      * @return the string as UTF-8 bytes
      */
     public static byte[] getUtf8Bytes(String str) {
@@ -66,6 +72,9 @@ public class TextUtils {
 
     /**
      * Converts the specified bytes to String using US-ASCII encoding.
+     *
+     * @param bytes
+     * @return
      */
     public static String getStringAscii(byte[] bytes) {
         return getString(bytes, "US-ASCII");
@@ -73,6 +82,9 @@ public class TextUtils {
 
     /**
      * Converts the specified bytes to String using UTF-8 encoding.
+     *
+     * @param bytes
+     * @return
      */
     public static String getStringUtf8(byte[] bytes) {
         return getString(bytes, "UTF-8");

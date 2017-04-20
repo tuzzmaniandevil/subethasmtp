@@ -22,10 +22,15 @@ public class ReceivedHeaderStream extends FilterInputStream {
     ByteArrayInputStream header;
 
     /**
+     * @param in
+     * @param heloHost
+     * @param host
      * @param softwareName A software name and version, or null if this
      * information should not be printed
      * @param singleRecipient The single recipient of the message. If there are
      * more than one recipients then this must be null.
+     * @param id
+     * @param whoami
      */
     public ReceivedHeaderStream(InputStream in, String heloHost, InetAddress host, String whoami, String softwareName,
             String id, String singleRecipient) {
@@ -39,21 +44,21 @@ Received: from iamhelo (wasabi.infohazard.org [209.237.247.14])
         DateFormat fmt = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z (z)", Locale.US);
         String timestamp = fmt.format(new Date());
 
-        StringBuilder header = new StringBuilder();
-        header.append("Received: from " + heloHost + " (" + constructTcpInfo(host) + ")\r\n");
-        header.append("        by " + whoami + "\r\n");
-        header.append("        with SMTP");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Received: from ").append(heloHost).append(" (").append(constructTcpInfo(host)).append(")\r\n");
+        sb.append("        by ").append(whoami).append("\r\n");
+        sb.append("        with SMTP");
         if (softwareName != null) {
-            header.append(" (" + softwareName + ")");
+            sb.append(" (").append(softwareName).append(")");
         }
-        header.append(" id ").append(id);
+        sb.append(" id ").append(id);
         if (singleRecipient != null) {
-            header.append("\r\n        for " + singleRecipient);
+            sb.append("\r\n        for ").append(singleRecipient);
         }
-        header.append(";\r\n");
-        header.append("        " + timestamp + "\r\n");
+        sb.append(";\r\n");
+        sb.append("        ").append(timestamp).append("\r\n");
 
-        this.header = new ByteArrayInputStream(TextUtils.getAsciiBytes(header.toString()));
+        this.header = new ByteArrayInputStream(TextUtils.getAsciiBytes(sb.toString()));
     }
 
     /**

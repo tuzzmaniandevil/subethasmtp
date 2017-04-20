@@ -18,6 +18,8 @@ public class LoginFailedException extends Exception {
 
     /**
      * Creates a new instance of LoginFailedException
+     *
+     * @param msg
      */
     public LoginFailedException(String msg) {
         super(msg);

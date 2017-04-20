@@ -207,7 +207,7 @@ public class Session implements Runnable, MessageContext {
 
         while (!this.quitting) {
             try {
-                String line = null;
+                String line;
                 try {
                     line = this.reader.readLine();
                 } catch (SocketException ex) {
@@ -279,6 +279,9 @@ public class Session implements Runnable, MessageContext {
      * Initializes our reader, writer, and the i/o filter chains based on the
      * specified socket. This is called internally when we startup and when (if)
      * SSL is started.
+     *
+     * @param socket
+     * @throws java.io.IOException
      */
     public void setSocket(Socket socket) throws IOException {
         this.socket = socket;
@@ -300,6 +303,8 @@ public class Session implements Runnable, MessageContext {
 
     /**
      * Close the client socket if it is open
+     *
+     * @throws java.io.IOException
      */
     public void closeSocket() throws IOException {
         if ((this.socket != null) && this.socket.isBound() && !this.socket.isClosed()) {

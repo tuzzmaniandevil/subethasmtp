@@ -53,6 +53,7 @@ public class BigAttachmentTest {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Before
     protected void setUp() throws Exception {
@@ -63,18 +64,20 @@ public class BigAttachmentTest {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @After
     protected void tearDown() throws Exception {
         try {
             this.server.stop();
         } catch (Exception e) {
-            e.printStackTrace();
-        };
+            log.error("tearDown: {}", e.getMessage(), e);
+        }
     }
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testAttachments() throws Exception {
         if (BIGFILE_PATH.equals(TO_CHANGE)) {

@@ -26,7 +26,7 @@ public class CommandHandler {
      * The map of known SMTP commands. Keys are upper case names of the
      * commands.
      */
-    private Map<String, Command> commandMap = new HashMap<>();
+    private final Map<String, Command> commandMap = new HashMap<>();
 
     /**
      *
@@ -52,8 +52,10 @@ public class CommandHandler {
 
     /**
      * Adds or replaces the specified command.
+     *
+     * @param command
      */
-    public void addCommand(Command command) {
+    public final void addCommand(Command command) {
         if (log.isDebugEnabled()) {
             log.debug("Added command: " + command.getName());
         }
@@ -74,6 +76,8 @@ public class CommandHandler {
 
     /**
      *
+     * @param command
+     * @return
      */
     public boolean containsCommand(String command) {
         return this.commandMap.containsKey(command);
@@ -81,6 +85,7 @@ public class CommandHandler {
 
     /**
      *
+     * @return
      */
     public Set<String> getVerbs() {
         return this.commandMap.keySet();
@@ -88,6 +93,10 @@ public class CommandHandler {
 
     /**
      *
+     * @param context
+     * @param commandString
+     * @throws java.net.SocketTimeoutException
+     * @throws org.subethamail.smtp.DropConnectionException
      */
     public void handleCommand(Session context, String commandString)
             throws SocketTimeoutException, IOException, DropConnectionException {
@@ -100,6 +109,7 @@ public class CommandHandler {
     }
 
     /**
+     * @param command
      * @return the HelpMessage object for the given command name (verb)
      * @throws CommandException
      */

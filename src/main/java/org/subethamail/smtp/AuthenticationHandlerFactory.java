@@ -23,6 +23,8 @@ public interface AuthenticationHandlerFactory {
 
     /**
      * Create a fresh instance of your handler.
+     *
+     * @return org.subethamail.smtp.AuthenticationHandler
      */
     public AuthenticationHandler create();
 

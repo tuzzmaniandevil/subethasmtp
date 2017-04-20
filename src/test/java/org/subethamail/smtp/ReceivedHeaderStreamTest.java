@@ -20,6 +20,7 @@ public class ReceivedHeaderStreamTest extends TestCase {
 
     /**
      *
+     * @param name
      */
     public ReceivedHeaderStreamTest(String name) {
         super(name);
@@ -27,6 +28,7 @@ public class ReceivedHeaderStreamTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
@@ -35,6 +37,7 @@ public class ReceivedHeaderStreamTest extends TestCase {
 
     /**
      *
+     * @throws java.lang.Exception
      */
     public void testReceivedHeader() throws Exception {
         int BUF_SIZE = 10000;

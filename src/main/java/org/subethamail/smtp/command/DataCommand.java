@@ -31,6 +31,9 @@ public class DataCommand extends BaseCommand {
 
     /**
      *
+     * @param sess
+     * @throws java.io.IOException
+     * @throws org.subethamail.smtp.DropConnectionException
      */
     @Override
     public void execute(String commandString, Session sess)
@@ -63,8 +66,7 @@ public class DataCommand extends BaseCommand {
             // suck it up so it doesn't pollute further exchanges.  This code used to
             // throw an exception, but this seems an arbitrary part of the contract that
             // we might as well relax.
-            while (stream.read() != -1)
-				;
+            while (stream.read() != -1);
         } catch (DropConnectionException ex) {
             throw ex; // Propagate this
         } catch (RejectException ex) {

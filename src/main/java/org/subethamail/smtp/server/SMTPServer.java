@@ -131,6 +131,8 @@ public class SMTPServer {
 
     /**
      * Simple constructor.
+     *
+     * @param handlerFactory
      */
     public SMTPServer(MessageHandlerFactory handlerFactory) {
         this(handlerFactory, null, null);
@@ -138,6 +140,9 @@ public class SMTPServer {
 
     /**
      * Constructor with {@link AuthenticationHandlerFactory}.
+     *
+     * @param handlerFactory
+     * @param authHandlerFact
      */
     public SMTPServer(MessageHandlerFactory handlerFactory, AuthenticationHandlerFactory authHandlerFact) {
         this(handlerFactory, authHandlerFact, null);
@@ -146,6 +151,7 @@ public class SMTPServer {
     /**
      * Complex constructor.
      *
+     * @param msgHandlerFact
      * @param authHandlerFact the {@link AuthenticationHandlerFactory} which
      * performs authentication in the SMTP AUTH command. If null, authentication
      * is not supported. Note that setting an authentication handler does not
@@ -190,6 +196,8 @@ public class SMTPServer {
 
     /**
      * The host name that will be reported to SMTP clients
+     *
+     * @param hostName
      */
     public void setHostName(String hostName) {
         this.hostName = hostName;
@@ -197,6 +205,8 @@ public class SMTPServer {
 
     /**
      * null means all interfaces
+     *
+     * @return
      */
     public InetAddress getBindAddress() {
         return this.bindAddress;
@@ -204,6 +214,8 @@ public class SMTPServer {
 
     /**
      * null means all interfaces
+     *
+     * @param bindAddress
      */
     public void setBindAddress(InetAddress bindAddress) {
         this.bindAddress = bindAddress;
@@ -211,6 +223,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public int getPort() {
         return this.port;
@@ -218,6 +231,7 @@ public class SMTPServer {
 
     /**
      *
+     * @param port
      */
     public void setPort(int port) {
         this.port = port;
@@ -226,6 +240,8 @@ public class SMTPServer {
     /**
      * The string reported to the public as the software running here. Defaults
      * to SubEthaSTP and the version number.
+     *
+     * @return
      */
     public String getSoftwareName() {
         return this.softwareName;
@@ -233,6 +249,8 @@ public class SMTPServer {
 
     /**
      * Changes the publicly reported software information.
+     *
+     * @param value
      */
     public void setSoftwareName(String value) {
         this.softwareName = value;
@@ -247,6 +265,8 @@ public class SMTPServer {
 
     /**
      * Is the server running after start() has been called?
+     *
+     * @return
      */
     public synchronized boolean isRunning() {
         return this.serverThread != null;
@@ -271,6 +291,8 @@ public class SMTPServer {
      * The backlog argument must be a positive value greater than 0. If the
      * value passed if equal or less than 0, then the default value will be
      * assumed.
+     *
+     * @param backlog
      */
     public void setBacklog(int backlog) {
         this.backlog = backlog;
@@ -325,6 +347,7 @@ public class SMTPServer {
      * Override this method if you want to create your own server sockets. You
      * must return a bound ServerSocket instance
      *
+     * @return
      * @throws IOException
      */
     protected ServerSocket createServerSocket() throws IOException {
@@ -385,6 +408,7 @@ public class SMTPServer {
 
     /**
      *
+     * @param fact
      */
     public void setMessageHandlerFactory(MessageHandlerFactory fact) {
         this.messageHandlerFactory = fact;
@@ -400,6 +424,7 @@ public class SMTPServer {
 
     /**
      *
+     * @param fact
      */
     public void setAuthenticationHandlerFactory(AuthenticationHandlerFactory fact) {
         this.authenticationHandlerFactory = fact;
@@ -417,6 +442,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public int getMaxConnections() {
         return this.maxConnections;
@@ -437,6 +463,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public int getConnectionTimeout() {
         return this.connectionTimeout;
@@ -446,6 +473,8 @@ public class SMTPServer {
      * Set the number of milliseconds that the server will wait for client
      * input. Sometime after this period expires, an client will be rejected and
      * the connection closed.
+     *
+     * @param connectionTimeout
      */
     public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
@@ -458,6 +487,8 @@ public class SMTPServer {
     /**
      * Set the maximum number of recipients allowed for each message. A value of
      * -1 means "unlimited".
+     *
+     * @param maxRecipients
      */
     public void setMaxRecipients(int maxRecipients) {
         this.maxRecipients = maxRecipients;
@@ -477,6 +508,7 @@ public class SMTPServer {
      * <p>
      * Up to SubEthaSMTP 3.1.5 the default was true, i.e. TLS was enabled.
      *
+     * @param enableTLS
      * @see <a
      *      href="http://blog.jteam.nl/2009/11/10/securing-connections-with-tls/">Securing
      * Connections with TLS</a>
@@ -487,13 +519,14 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public boolean getEnableTLS() {
         return enableTLS;
     }
 
     /**
-     * @deprecated use {@link #enableTLS}
+     * @return @deprecated use {@link #enableTLS}
      */
     @Deprecated
     public boolean getDisableTLS() {
@@ -501,6 +534,7 @@ public class SMTPServer {
     }
 
     /**
+     * @param value
      * @deprecated use {@link #setEnableTLS(boolean)}
      */
     @Deprecated
@@ -510,6 +544,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public boolean getHideTLS() {
         return this.hideTLS;
@@ -518,6 +553,8 @@ public class SMTPServer {
     /**
      * If set to true, TLS will not be advertised in the EHLO string. Default is
      * false; true implied when disableTLS=true.
+     *
+     * @param value
      */
     public void setHideTLS(boolean value) {
         this.hideTLS = value;
@@ -525,6 +562,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public boolean getRequireTLS() {
         return this.requireTLS;
@@ -541,6 +579,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public boolean getRequireAuth() {
         return requireAuth;
@@ -572,6 +611,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public boolean getDisableReceivedHeaders() {
         return disableReceivedHeaders;
@@ -587,6 +627,7 @@ public class SMTPServer {
 
     /**
      *
+     * @return
      */
     public SessionIdFactory getSessionIdFactory() {
         return sessionIdFactory;
@@ -595,6 +636,8 @@ public class SMTPServer {
     /**
      * Sets the {@link SessionIdFactory} which will allocate a unique identifier
      * for each mail sessions. If not set, a reasonable default will be used.
+     *
+     * @param sessionIdFactory
      */
     public void setSessionIdFactory(SessionIdFactory sessionIdFactory) {
         this.sessionIdFactory = sessionIdFactory;

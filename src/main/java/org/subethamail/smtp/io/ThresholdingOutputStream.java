@@ -34,6 +34,8 @@ abstract public class ThresholdingOutputStream extends OutputStream {
     boolean thresholdReached = false;
 
     /**
+     * @param base
+     * @param thresholdBytes
      */
     public ThresholdingOutputStream(OutputStream base, int thresholdBytes) {
         this.output = base;
@@ -98,6 +100,9 @@ abstract public class ThresholdingOutputStream extends OutputStream {
 
     /**
      * Checks whether reading count bytes would cross the limit.
+     *
+     * @param count
+     * @throws java.io.IOException
      */
     protected void checkThreshold(int count) throws IOException {
         int predicted = this.written + count;
@@ -121,6 +126,7 @@ abstract public class ThresholdingOutputStream extends OutputStream {
      *
      * @param current is the current number of bytes that have been written
      * @param predicted is the total number after the write completes
+     * @throws java.io.IOException
      */
     abstract protected void thresholdReached(int current, int predicted) throws IOException;
 }

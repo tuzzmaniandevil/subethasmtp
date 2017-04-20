@@ -8,29 +8,40 @@ public class InvalidCommandNameException extends CommandException {
 
     /**
      *
+     * @see CommandException#CommandException()
      */
     public InvalidCommandNameException() {
         super();
     }
 
     /**
+     * See
+     * {@link CommandException#CommandException(java.lang.String) CommandException}
      *
+     * @param message
      */
-    public InvalidCommandNameException(String string) {
-        super(string);
+    public InvalidCommandNameException(String message) {
+        super(message);
     }
 
     /**
+     * See
+     * {@link CommandException#CommandException(java.lang.String, java.lang.Throwable) CommandException}
      *
+     * @param message
+     * @param cause
      */
-    public InvalidCommandNameException(String string, Throwable throwable) {
-        super(string, throwable);
+    public InvalidCommandNameException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     /**
+     * See
+     * {@link CommandException#CommandException(java.lang.Throwable) CommandException}
      *
+     * @param cause
      */
-    public InvalidCommandNameException(Throwable throwable) {
-        super(throwable);
+    public InvalidCommandNameException(Throwable cause) {
+        super(cause);
     }
 }

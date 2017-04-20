@@ -11,7 +11,7 @@ import org.subethamail.smtp.DropConnectionException;
  */
 public class RequireTLSCommandWrapper implements Command {
 
-    private Command wrapped;
+    private final Command wrapped;
 
     /**
      * @param wrapped the wrapped command (not null)
@@ -20,6 +20,10 @@ public class RequireTLSCommandWrapper implements Command {
         this.wrapped = wrapped;
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public void execute(String commandString, Session sess)
             throws IOException, DropConnectionException {
         if (!sess.getServer().getRequireTLS() || sess.isTLSStarted()) {
@@ -29,10 +33,18 @@ public class RequireTLSCommandWrapper implements Command {
         }
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public HelpMessage getHelp() throws CommandException {
         return wrapped.getHelp();
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public String getName() {
         return wrapped.getName();
     }

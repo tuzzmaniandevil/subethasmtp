@@ -16,14 +16,16 @@ import java.io.IOException;
 public class TooMuchDataException extends IOException {
 
     /**
-     *
+     * Constructs a new exception.
      */
     public TooMuchDataException() {
         super();
     }
 
     /**
+     * Constructs a new exception with the specified detail message.
      *
+     * @param message
      */
     public TooMuchDataException(String message) {
         super(message);

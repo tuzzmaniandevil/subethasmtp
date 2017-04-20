@@ -18,6 +18,7 @@ public interface MessageHandlerFactory {
      * Called for the exchange of a single message during an SMTP conversation.
      *
      * @param ctx provides information about the client.
+     * @return MessageHandler
      */
     public MessageHandler create(MessageContext ctx);
 }

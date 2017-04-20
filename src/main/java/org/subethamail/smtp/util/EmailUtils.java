@@ -9,6 +9,7 @@ import javax.mail.internet.InternetAddress;
 public class EmailUtils {
 
     /**
+     * @param address
      * @return true if the string is a valid email address
      */
     public static boolean isValidEmailAddress(String address) {
@@ -17,14 +18,10 @@ public class EmailUtils {
             return true;
         }
 
-        boolean result = false;
+        boolean result;
         try {
             InternetAddress[] ia = InternetAddress.parse(address, true);
-            if (ia.length == 0) {
-                result = false;
-            } else {
-                result = true;
-            }
+            result = ia.length != 0;
         } catch (AddressException ae) {
             result = false;
         }
@@ -33,6 +30,10 @@ public class EmailUtils {
 
     /**
      * Extracts the email address within a <> after a specified offset.
+     *
+     * @param args
+     * @param offset
+     * @return
      */
     public static String extractEmailAddress(String args, int offset) {
         String address = args.substring(offset).trim();
@@ -54,6 +55,9 @@ public class EmailUtils {
     /**
      * Normalize the domain-part to lowercase. If email address is missing an
      * '@' the email is returned as-is.
+     *
+     * @param email
+     * @return
      */
     public static String normalizeEmail(String email) {
         int atIndex = email.indexOf('@');

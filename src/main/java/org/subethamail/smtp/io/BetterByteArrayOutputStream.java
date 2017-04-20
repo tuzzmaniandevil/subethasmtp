@@ -25,6 +25,8 @@ class BetterByteArrayOutputStream extends ByteArrayOutputStream {
 
     /**
      * Does not make a copy of the internal buffer.
+     *
+     * @return a new ByteArrayInputStream with the internal buffer
      */
     public InputStream getInputStream() {
         return new ByteArrayInputStream(this.buf, 0, this.count);

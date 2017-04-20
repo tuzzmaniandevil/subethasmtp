@@ -8,6 +8,8 @@ public interface SessionIdFactory {
 
     /**
      * Returns a new identifier.
+     *
+     * @return Returns a new identifier.
      */
     String create();
 }
