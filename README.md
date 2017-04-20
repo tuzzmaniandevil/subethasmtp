@@ -36,9 +36,22 @@ This new fork by Engine821.com intends to tidy up some of the structure, while k
 We too did a survey of existing Java SMTP implementations and were unsatisfied... until we found SubEthaSMTP! The code is clean and very well thought out. So far the changes we've made are minor, including...
 
 * Eliminating the embedded `/lib` directory. Maven correctly handles pulling in all the dependencies and best practices discourage keeping binary artifacts inside version control.
-* Updating to the latest versions of some of the libraries used. 
+* Updating to the latest versions of some of the libraries used.
 * Removing some of the IDE metadata files. Your IDE can rercreate whichever ones you need based on your preferences and the Maven POM.
-* Making the message handing exceptions be `checked`. This is possibly controversial, but we thought about it a lot and prefer to have these exceptions show up in the `throws` clause rather than have them potentially pop-up unexpectedly at run-time. 
+
+This is a new fork by Tuzza.co. The reason for this work is to cleanup javadoc, code, update to Java 1.8 and even some bug fixes and new features.
+
+I made a fork when I started writing an SMTP server framework and just couldn't find a decent lib to use! I then found SubEthaSMTP but it lacked a couple of features I really needed, like forcing authentication (Though it was done, it was never in a release), custom TLS certificate handling and so on.
+
+## Maven Details ##
+This project is available on maven, just using a different package name to avoid conflicts.
+```xml
+<dependency>
+    <groupId>co.tuzza.org.subethamail</groupId>
+    <artifactId>subethasmtp</artifactId>
+    <version>3.1.9</version>
+</dependency>
+```
 
 
 ## Project Authors ##
