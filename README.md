@@ -1,4 +1,4 @@
-SubEtha SMTP is a Java library which allows your application to receive SMTP mail with a simple, easy-to-understand API.
+SubEtha SMTP is a Java library which allows your application to receive SMTP mail with a simple, easy-to-understand API. [![Build Status](https://travis-ci.org/tuzzmaniandevil/subethasmtp.svg?branch=master)](https://travis-ci.org/tuzzmaniandevil/subethasmtp)
 
 This component can be used in almost any kind of email  processing application.  Hypothetical (and not-so hypothetical) uses include:
 
