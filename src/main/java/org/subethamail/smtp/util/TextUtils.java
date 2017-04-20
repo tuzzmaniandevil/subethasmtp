@@ -10,8 +10,8 @@ import java.util.Iterator;
 public class TextUtils {
 
     /**
-     * @param items
-     * @param delim
+     * @param items collection of strings to join
+     * @param delim the delimeter to use when joining
      * @return a delimited string containing the specified items
      */
     public static String joinTogether(Collection<String> items, String delim) {
@@ -28,8 +28,8 @@ public class TextUtils {
     }
 
     /**
-     * @param str
-     * @param charset
+     * @param str string to parse
+     * @param charset the charset to use when getting the bytes
      * @return the value of str.getBytes() without the idiotic checked exception
      */
     public static byte[] getBytes(String str, String charset) {
@@ -41,7 +41,7 @@ public class TextUtils {
     }
 
     /**
-     * @param str
+     * @param str string to parse
      * @return the string as US-ASCII bytes
      */
     public static byte[] getAsciiBytes(String str) {
@@ -49,7 +49,7 @@ public class TextUtils {
     }
 
     /**
-     * @param str
+     * @param str string to parse
      * @return the string as UTF-8 bytes
      */
     public static byte[] getUtf8Bytes(String str) {
@@ -73,8 +73,8 @@ public class TextUtils {
     /**
      * Converts the specified bytes to String using US-ASCII encoding.
      *
-     * @param bytes
-     * @return
+     * @param bytes byte array to a string
+     * @return converted string
      */
     public static String getStringAscii(byte[] bytes) {
         return getString(bytes, "US-ASCII");
@@ -83,8 +83,8 @@ public class TextUtils {
     /**
      * Converts the specified bytes to String using UTF-8 encoding.
      *
-     * @param bytes
-     * @return
+     * @param bytes byte array to a string
+     * @return converted string
      */
     public static String getStringUtf8(byte[] bytes) {
         return getString(bytes, "UTF-8");

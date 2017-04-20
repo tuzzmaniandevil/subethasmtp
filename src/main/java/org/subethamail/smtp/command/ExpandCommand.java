@@ -6,7 +6,7 @@ import org.subethamail.smtp.server.Session;
 
 /**
  *
- * @author Michele Zuccala < zuccala.m@gmail.com >
+ * @author Michele Zuccala &lt;zuccala.m@gmail.com&gt;
  */
 public class ExpandCommand extends BaseCommand {
 

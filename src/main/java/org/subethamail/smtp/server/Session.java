@@ -108,9 +108,10 @@ public class Session implements Runnable, MessageContext {
      * Creates the Runnable Session object.
      *
      * @param server a link to our parent
-     * @param serverThread
+     * @param serverThread current server thread
      * @param socket is the socket to the client
-     * @throws IOException
+     * @throws IOException Signals that an I/O exception of some sort has
+     * occurred.
      */
     public Session(SMTPServer server, ServerThread serverThread, Socket socket)
             throws IOException {
@@ -280,8 +281,9 @@ public class Session implements Runnable, MessageContext {
      * specified socket. This is called internally when we startup and when (if)
      * SSL is started.
      *
-     * @param socket
-     * @throws java.io.IOException
+     * @param socket client socker
+     * @throws java.io.IOException Signals that an I/O exception of some sort
+     * has occurred.
      */
     public void setSocket(Socket socket) throws IOException {
         this.socket = socket;
@@ -304,7 +306,8 @@ public class Session implements Runnable, MessageContext {
     /**
      * Close the client socket if it is open
      *
-     * @throws java.io.IOException
+     * @throws java.io.IOException Signals that an I/O exception of some sort
+     * has occurred.
      */
     public void closeSocket() throws IOException {
         if ((this.socket != null) && this.socket.isBound() && !this.socket.isClosed()) {
@@ -329,8 +332,9 @@ public class Session implements Runnable, MessageContext {
     /**
      * Sends the response to the client
      *
-     * @param response
-     * @throws java.io.IOException
+     * @param response text to send to client
+     * @throws java.io.IOException Signals that an I/O exception of some sort
+     * has occurred.
      */
     public void sendResponse(String response) throws IOException {
         if (log.isDebugEnabled()) {
@@ -345,7 +349,7 @@ public class Session implements Runnable, MessageContext {
      * Returns an identifier of the session which is reasonably unique within an
      * extended time period.
      *
-     * @return
+     * @return session id
      */
     public String getSessionId() {
         return sessionId;
@@ -384,14 +388,14 @@ public class Session implements Runnable, MessageContext {
 
     /**
      *
-     * @param value
+     * @param value helo/ehlo value
      */
     public void setHelo(String value) {
         this.helo = value;
     }
 
     /**
-     * @return
+     * @return true if mail from is present
      *
      * @deprecated use {@link #isMailTransactionInProgress()}
      */
@@ -402,7 +406,7 @@ public class Session implements Runnable, MessageContext {
 
     /**
      *
-     * @param recipientAddress
+     * @param recipientAddress recipient address to add
      */
     public void addRecipient(String recipientAddress) {
         this.recipientCount++;
@@ -411,7 +415,7 @@ public class Session implements Runnable, MessageContext {
 
     /**
      *
-     * @return
+     * @return recipient count
      */
     public int getRecipientCount() {
         return this.recipientCount;
@@ -421,7 +425,7 @@ public class Session implements Runnable, MessageContext {
      * Returns the first accepted recipient if there is exactly one accepted
      * recipient, otherwise it returns null.
      *
-     * @return
+     * @return first recipient email address
      */
     public String getSingleRecipient() {
         return singleRecipient;
@@ -429,14 +433,14 @@ public class Session implements Runnable, MessageContext {
 
     /**
      *
-     * @return
+     * @return true if the client is authenticated
      */
     public boolean isAuthenticated() {
         return this.authenticationHandler != null;
     }
 
     /**
-     *
+     * {@inheritDoc }
      */
     @Override
     public AuthenticationHandler getAuthenticationHandler() {
@@ -448,14 +452,14 @@ public class Session implements Runnable, MessageContext {
      * authenticated. The handler will be an object created by the
      * AuthenticationHandlerFactory.
      *
-     * @param handler
+     * @param handler handler to use
      */
     public void setAuthenticationHandler(AuthenticationHandler handler) {
         this.authenticationHandler = handler;
     }
 
     /**
-     * @return the maxMessageSize
+     * @return the maxMessageSize the set declared message size
      */
     public int getDeclaredMessageSize() {
         return this.declaredMessageSize;
@@ -490,7 +494,7 @@ public class Session implements Runnable, MessageContext {
      * transaction is successfully completed after the message content is
      * received and accepted at the end of the DATA command.
      *
-     * @return
+     * @return true if transaction is in progress
      */
     public boolean isMailTransactionInProgress() {
         return this.messageHandler != null;

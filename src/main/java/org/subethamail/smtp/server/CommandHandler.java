@@ -53,7 +53,7 @@ public class CommandHandler {
     /**
      * Adds or replaces the specified command.
      *
-     * @param command
+     * @param command add or replace a {@link Command}
      */
     public final void addCommand(Command command) {
         if (log.isDebugEnabled()) {
@@ -76,8 +76,8 @@ public class CommandHandler {
 
     /**
      *
-     * @param command
-     * @return
+     * @param command the command to check
+     * @return true if the command already exists, false otherwise
      */
     public boolean containsCommand(String command) {
         return this.commandMap.containsKey(command);
@@ -85,7 +85,7 @@ public class CommandHandler {
 
     /**
      *
-     * @return
+     * @return a set of supported commands
      */
     public Set<String> getVerbs() {
         return this.commandMap.keySet();
@@ -93,25 +93,28 @@ public class CommandHandler {
 
     /**
      *
-     * @param context
-     * @param commandString
-     * @throws java.net.SocketTimeoutException
-     * @throws org.subethamail.smtp.DropConnectionException
+     * @param session Mail session
+     * @param commandString command string to process
+     * @throws java.net.SocketTimeoutException if the socket timeout has been
+     * reached
+     * @throws org.subethamail.smtp.DropConnectionException if a drop exception
+     * has been thrown
      */
-    public void handleCommand(Session context, String commandString)
+    public void handleCommand(Session session, String commandString)
             throws SocketTimeoutException, IOException, DropConnectionException {
         try {
             Command command = this.getCommandFromString(commandString);
-            command.execute(commandString, context);
+            command.execute(commandString, session);
         } catch (CommandException e) {
-            context.sendResponse("500 " + e.getMessage());
+            session.sendResponse("500 " + e.getMessage());
         }
     }
 
     /**
-     * @param command
+     * @param command command to get the help text for
      * @return the HelpMessage object for the given command name (verb)
-     * @throws CommandException
+     * @throws CommandException Signals there was an error processing the
+     * command
      */
     public HelpMessage getHelp(String command) throws CommandException {
         return this.getCommandFromString(command).getHelp();

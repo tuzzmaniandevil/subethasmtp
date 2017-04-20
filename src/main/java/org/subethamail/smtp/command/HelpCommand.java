@@ -7,7 +7,7 @@ import org.subethamail.smtp.server.SMTPServer;
 import org.subethamail.smtp.server.Session;
 
 /**
- * Provides a help <verb> system for people to interact with.
+ * Provides a help &lt;verb&gt; system for people to interact with.
  *
  * @author Ian McFarland &lt;ian@neo.com&gt;
  * @author Jon Stevens

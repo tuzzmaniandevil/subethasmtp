@@ -12,25 +12,32 @@ import org.subethamail.smtp.DropConnectionException;
 public interface Command {
 
     /**
+     * This is the main method that you need to override in order to implement a
+     * command.
      *
-     * @param commandString
-     * @param sess
-     * @throws java.io.IOException
-     * @throws org.subethamail.smtp.DropConnectionException
+     * @param commandString string to execute
+     * @param sess Mail Session
+     * @throws java.io.IOException Signals that an I/O exception of some sort
+     * has occurred
+     * @throws org.subethamail.smtp.DropConnectionException A type of
+     * RejectException that additionally causes the server to close the
+     * connection to the client.
      */
     public void execute(String commandString, Session sess) throws IOException,
             DropConnectionException;
 
     /**
      *
-     * @return @throws org.subethamail.smtp.server.CommandException
+     * @return an instance of {@link HelpMessage}
+     * @throws org.subethamail.smtp.server.CommandException Signals that there
+     * was an error processing the command
      */
     public HelpMessage getHelp() throws CommandException;
 
     /**
      * Returns the name of the command in upper case. For example "QUIT".
      *
-     * @return
+     * @return the command name in upper case
      */
     public String getName();
 }

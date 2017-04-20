@@ -25,7 +25,8 @@ public class TooMuchDataException extends IOException {
     /**
      * Constructs a new exception with the specified detail message.
      *
-     * @param message
+     * @param message The detail message (which is saved for later retrieval by
+     * the {@link #getMessage()} method)
      */
     public TooMuchDataException(String message) {
         super(message);

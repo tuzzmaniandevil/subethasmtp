@@ -30,8 +30,8 @@ abstract public class BaseCommand implements Command {
 
     /**
      *
-     * @param name
-     * @param help
+     * @param name name of the command. i.e. HELO or HELP
+     * @param help the help text to describe this command
      */
     protected BaseCommand(String name, String help) {
         this.name = name;
@@ -40,9 +40,9 @@ abstract public class BaseCommand implements Command {
 
     /**
      *
-     * @param name
-     * @param help
-     * @param argumentDescription
+     * @param name name of the command. i.e. HELO or HELP
+     * @param help the help text to describe this command
+     * @param argumentDescription describes accepted arguments
      */
     protected BaseCommand(String name, String help, String argumentDescription) {
         this.name = name;
@@ -50,21 +50,14 @@ abstract public class BaseCommand implements Command {
     }
 
     /**
-     * This is the main method that you need to override in order to implement a
-     * command.
-     *
-     * @param commandString
-     * @param context
-     * @throws java.io.IOException
-     * @throws org.subethamail.smtp.DropConnectionException
+     * {@inheritDoc }
      */
     @Override
     abstract public void execute(String commandString, Session context)
             throws IOException, DropConnectionException;
 
     /**
-     *
-     * @return
+     * {@inheritDoc }
      */
     @Override
     public HelpMessage getHelp() {
@@ -72,8 +65,7 @@ abstract public class BaseCommand implements Command {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public String getName() {
@@ -82,8 +74,8 @@ abstract public class BaseCommand implements Command {
 
     /**
      *
-     * @param commandString
-     * @return
+     * @param commandString string to check
+     * @return string trimmed to length
      */
     protected String getArgPredicate(String commandString) {
         if (commandString == null || commandString.length() < 4) {
@@ -95,8 +87,8 @@ abstract public class BaseCommand implements Command {
 
     /**
      *
-     * @param commandString
-     * @return
+     * @param commandString string to check
+     * @return string trimmed to length
      */
     protected String[] getArgs(String commandString) {
         List<String> strings = new ArrayList<>();

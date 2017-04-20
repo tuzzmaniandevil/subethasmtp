@@ -8,7 +8,7 @@ package org.subethamail.smtp;
  * Do not share a single instance of this interface if you don't explicitly need
  * to do so.
  *
- * @author Marco Trevisan <mrctrevisan@yahoo.it>
+ * @author Marco Trevisan &lt;mrctrevisan@yahoo.it&gt;
  * @author Jeff Schnitzer
  * @author Scott Hernandez
  */
@@ -51,7 +51,7 @@ public interface AuthenticationHandler {
      * username. If authentication was not successful, the return value is
      * undefined.
      *
-     * @return
+     * @return identity object
      */
     public Object getIdentity();
 }

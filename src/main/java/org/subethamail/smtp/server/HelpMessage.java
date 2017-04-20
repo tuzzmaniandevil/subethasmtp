@@ -18,9 +18,9 @@ public class HelpMessage {
 
     /**
      *
-     * @param commandName
-     * @param helpMessage
-     * @param argumentDescription
+     * @param commandName command name i.e. HELO or EHLO
+     * @param helpMessage help message to display
+     * @param argumentDescription describes accepted arguments
      */
     public HelpMessage(String commandName, String helpMessage, String argumentDescription) {
         this.commandName = commandName;
@@ -31,8 +31,8 @@ public class HelpMessage {
 
     /**
      *
-     * @param commandName
-     * @param helpMessage
+     * @param commandName command name i.e. HELO or EHLO
+     * @param helpMessage help message to display
      */
     public HelpMessage(String commandName, String helpMessage) {
         this(commandName, helpMessage, null);
@@ -40,7 +40,7 @@ public class HelpMessage {
 
     /**
      *
-     * @return
+     * @return name of the command
      */
     public String getName() {
         return this.commandName;
@@ -48,15 +48,12 @@ public class HelpMessage {
 
     /**
      *
-     * @return
+     * @return result to send to client
      */
     public String toOutputString() {
         return this.outputString;
     }
 
-    /**
-     *
-     */
     private void buildOutputString() {
         StringTokenizer stringTokenizer = new StringTokenizer(this.helpMessage, "\n");
         StringBuilder stringBuilder = new StringBuilder().append("214-").append(this.commandName).append(this.argumentDescription);
@@ -69,9 +66,7 @@ public class HelpMessage {
     }
 
     /**
-     *
-     * @param o
-     * @return
+     * {@inheritDoc }
      */
     @Override
     public boolean equals(Object o) {
@@ -95,8 +90,7 @@ public class HelpMessage {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc }
      */
     @Override
     public int hashCode() {

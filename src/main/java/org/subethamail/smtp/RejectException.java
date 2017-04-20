@@ -49,6 +49,7 @@ public class RejectException extends Exception {
 
     /**
      *
+     * @return SMTP specific code
      */
     public int getCode() {
         return this.code;
@@ -56,6 +57,7 @@ public class RejectException extends Exception {
 
     /**
      *
+     * @return SMTP error message
      */
     public String getErrorResponse() {
         return this.code + " " + this.getMessage();

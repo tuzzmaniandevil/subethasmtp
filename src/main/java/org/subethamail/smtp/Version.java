@@ -13,7 +13,7 @@ public class Version {
 
     /**
      *
-     * @return
+     * @return specification version
      */
     public static String getSpecification() {
         Package pkg = Version.class.getPackage();
@@ -22,7 +22,7 @@ public class Version {
 
     /**
      *
-     * @return
+     * @return implementation version
      */
     public static String getImplementation() {
         Package pkg = Version.class.getPackage();
@@ -32,7 +32,7 @@ public class Version {
     /**
      * A simple main method that prints the version and exits
      *
-     * @param args
+     * @param args command line args
      */
     public static void main(String[] args) {
         System.out.println("Version: " + getSpecification());

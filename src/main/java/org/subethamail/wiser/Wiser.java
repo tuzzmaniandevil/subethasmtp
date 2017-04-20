@@ -63,7 +63,7 @@ public class Wiser implements SimpleMessageListener {
     /**
      * Convenience constructor
      *
-     * @param port
+     * @param port Server Port
      */
     public Wiser(int port) {
         this();
@@ -73,7 +73,7 @@ public class Wiser implements SimpleMessageListener {
     /**
      * The port that the server should listen on.
      *
-     * @param port
+     * @param port Server Port
      */
     public void setPort(int port) {
         this.server.setPort(port);
@@ -82,7 +82,7 @@ public class Wiser implements SimpleMessageListener {
     /**
      * The hostname that the server should listen on.
      *
-     * @param hostname
+     * @param hostname Server Hostname
      */
     public void setHostname(String hostname) {
         this.server.setHostName(hostname);
@@ -105,8 +105,8 @@ public class Wiser implements SimpleMessageListener {
     /**
      * A main() for this class. Starts up the server.
      *
-     * @param args
-     * @throws java.lang.Exception
+     * @param args no args accepted
+     * @throws java.lang.Exception throws exceptions
      */
     public static void main(String[] args) throws Exception {
         Wiser wiser = new Wiser();
@@ -126,9 +126,7 @@ public class Wiser implements SimpleMessageListener {
     }
 
     /**
-     * Cache the messages in memory
-     *
-     * @throws org.subethamail.smtp.TooMuchDataException
+     * {@inheritDoc }
      */
     @Override
     public void deliver(String from, String recipient, InputStream data) throws TooMuchDataException, IOException {
@@ -158,7 +156,7 @@ public class Wiser implements SimpleMessageListener {
     /**
      * Creates the JavaMail Session object for use in WiserMessage
      *
-     * @return
+     * @return Default Mail Session
      */
     protected Session getSession() {
         return Session.getDefaultInstance(new Properties());
@@ -172,7 +170,7 @@ public class Wiser implements SimpleMessageListener {
      * transaction, then the list will contain more WiserMessage instances, one
      * for each recipient.
      *
-     * @return
+     * @return a list of {@link WiserMessage}
      */
     public List<WiserMessage> getMessages() {
         return this.messages;
@@ -189,8 +187,9 @@ public class Wiser implements SimpleMessageListener {
      * For debugging purposes, dumps a rough outline of the messages to the
      * output stream.
      *
-     * @param out
-     * @throws javax.mail.MessagingException
+     * @param out PrintStream to output to
+     * @throws javax.mail.MessagingException if there is an error writing the
+     * message
      */
     public void dumpMessages(PrintStream out) throws MessagingException {
         out.println("----- Start printing messages -----");
